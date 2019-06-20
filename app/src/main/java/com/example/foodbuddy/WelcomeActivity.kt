@@ -72,7 +72,7 @@ class WelcomeActivity : AppCompatActivity() {
 
         currentUser = User()
 
-        email.setText("ttt@yahoo.com")
+        email.setText("test@test.com")
         password.setText("testpass123")
 
 
@@ -137,6 +137,7 @@ class WelcomeActivity : AppCompatActivity() {
                             if (currentUser.profileSetupComplete) {
                                 val intent = Intent(applicationContext, MainActivity::class.java)
                                 intent.putExtra("currentUser", currentUser)
+                                intent.putExtra("fromProfileSetup", false)
                                 startActivity(intent)
                             }
                             else {

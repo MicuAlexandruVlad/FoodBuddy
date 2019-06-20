@@ -6,4 +6,5 @@ class DBLinks {
     val loginWithEmail: String = baseLink + "users/login-email/"
     val updateUserData: String = baseLink + "users/update-user-data/"
     val uploadUserImage: String = baseLink + "user-images/upload-user-image/"
+    val usersDiscover5: String = baseLink + "users/users-discover-5/"
 }

@@ -24,9 +24,6 @@ class User: Serializable {
     var student: Boolean = false
     var college: String = ""
 
-    override fun toString(): String {
-        return "User(email='$email', password='$password', firstName='$firstName', lastName='$lastName', bio='$bio', gender='$gender', age=$age, city='$city', country='$country', eatTimePeriods='$eatTimePeriods', eatTimes=$eatTimes, birthDate='$birthDate', genderToMeet='$genderToMeet', maxAge=$maxAge, minAge=$minAge, profileSetupComplete=$profileSetupComplete, student=$student)"
-    }
 
 
 }

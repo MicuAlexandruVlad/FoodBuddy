@@ -138,6 +138,8 @@ class ProfileSetupActivity : AppCompatActivity() {
     private lateinit var finishSetup: Button
 
     private var isStudent: Boolean = false
+    private var isMaleSelected = false
+    private var isFemaleSelected = false
     private var isStudentSelected: Boolean = false
     private var genderToMeetSelected = false
 
@@ -364,7 +366,7 @@ class ProfileSetupActivity : AppCompatActivity() {
                     break
                 }
                 else {
-                    val eatTime = "$sVal-$eVal"
+                    val eatTime = "$sVal - $eVal"
                     sb.append(eatTime)
                     if (index < eatTimesList.size - 1)
                         sb.append("/")
@@ -391,6 +393,8 @@ class ProfileSetupActivity : AppCompatActivity() {
                     animateElevation(male, 0f, 16f)
             }
             genderToMeetSelected = true
+            isMaleSelected = true
+            isFemaleSelected = false
         }
 
         female.setOnClickListener {
@@ -403,12 +407,19 @@ class ProfileSetupActivity : AppCompatActivity() {
                     animateElevation(female, 0f, 16f)
             }
             genderToMeetSelected = true
+            isFemaleSelected = true
+            isMaleSelected = false
         }
 
         toStep8.setOnClickListener {
             if (genderToMeetSelected) {
                 val min = minAge.text.toString()
                 val max = maxAge.text.toString()
+
+                if (isMaleSelected)
+                    currentUser.genderToMeet = "Male"
+                else
+                    currentUser.genderToMeet = "Female"
 
                 if (min.compareTo("") == 0 || max.compareTo("") == 0)
                     Toast.makeText(this, "One or more fields are empty", Toast.LENGTH_SHORT).show()
@@ -444,8 +455,6 @@ class ProfileSetupActivity : AppCompatActivity() {
         finishSetup.setOnClickListener {
             if (profileImage.drawable != null) {
                 currentUser.profileSetupComplete = true
-                showDialog("Profile Setup Complete", "Congratulations ! You have completed your profile." +
-                        " Now you can fully enjoy FoodBuddy.")
 
                 val client = AsyncHttpClient()
                 val params = RequestParams()
@@ -480,7 +489,21 @@ class ProfileSetupActivity : AppCompatActivity() {
                         val status = response!!.getInt("status")
 
                         if (status == HttpStatus.SC_OK) {
-                            Toast.makeText(applicationContext, "User updated", Toast.LENGTH_SHORT).show()
+                            // display success dialog
+                            val builder = AlertDialog.Builder(this@ProfileSetupActivity)
+                                .setTitle("Success")
+                                .setMessage("You have finished setting up your profile. Now you can fully experience FoodBuddy")
+                                .setNeutralButton("OK") {dialogInterface, _ ->
+                                    dialogInterface.dismiss()
+                                    val intent = Intent(applicationContext, MainActivity::class.java)
+                                    intent.putExtra("currentUser", currentUser)
+                                    intent.putExtra("fromProfileSetup", true)
+                                    startActivity(intent)
+                                    finish()
+                                }
+                            builder.create()
+                            builder.show()
+
                         }
                         else {
                             Toast.makeText(applicationContext, "There was a problem", Toast.LENGTH_SHORT).show()
@@ -544,6 +567,8 @@ class ProfileSetupActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            // TODO: if screen is onn landscape and you take a picture and come back to this activity says originalBmp is null
+            // (maybe from recreating activity)
             val originalBmp = BitmapFactory.decodeFile(currentPhotoPath)
             Glide.with(this).load(originalBmp).centerCrop().into(profileImage)
             // saveImageLocally(originalBmp)
@@ -551,8 +576,8 @@ class ProfileSetupActivity : AppCompatActivity() {
 
             Thread(Runnable {
                 val bao = ByteArrayOutputStream()
-                val smallBmp = Bitmap.createScaledBitmap(originalBmp, originalBmp.width / 6,
-                    originalBmp.height / 6, false)
+                val smallBmp = Bitmap.createScaledBitmap(originalBmp, originalBmp.width / 4,
+                    originalBmp.height / 4, false)
 
                 smallBmp.compress(Bitmap.CompressFormat.JPEG, 80, bao)
                 val smallBmpBytes = bao.toByteArray()
@@ -593,6 +618,7 @@ class ProfileSetupActivity : AppCompatActivity() {
 
                     override fun onSuccess(statusCode: Int, headers: Array<out Header>?, response: JSONObject?) {
                         super.onSuccess(statusCode, headers, response)
+                        Log.d(TAG, "Image uploaded")
                     }
 
                     override fun onFailure(

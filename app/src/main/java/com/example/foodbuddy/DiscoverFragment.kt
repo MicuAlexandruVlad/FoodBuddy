@@ -3,18 +3,14 @@ package com.example.foodbuddy
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
-import android.support.v4.widget.NestedScrollView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewParent
 import android.widget.ImageView
 import android.widget.RelativeLayout
-import android.widget.ScrollView
-import android.widget.Toast
 
 class DiscoverFragment : Fragment() {
 
@@ -31,12 +27,15 @@ class DiscoverFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
 
     private lateinit var adapter: DiscoverAdapter
-    private lateinit var list: ArrayList<String>
+    private lateinit var foundUsers: ArrayList<User>
+    private lateinit var smallProfileBitmaps: ArrayList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bundle = arguments!!
         currentUser = bundle.getSerializable("currentUser") as User
+        foundUsers = bundle.getSerializable("found_users") as ArrayList<User>
+        smallProfileBitmaps = bundle.getStringArrayList("small_profile_bitmaps") as ArrayList<String>
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -44,11 +43,8 @@ class DiscoverFragment : Fragment() {
 
         bindViews(view)
 
-        list = ArrayList()
-        for (index in 0 until 24) {
-            list.add("")
-        }
-        adapter = DiscoverAdapter(list)
+        adapter = DiscoverAdapter(foundUsers, context)
+        adapter.profilePics = smallProfileBitmaps
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.isNestedScrollingEnabled = false
