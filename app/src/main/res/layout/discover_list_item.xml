@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="12dp"
+        android:clipToPadding="false"
+>
+
+    <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:id="@+id/cv_top"
+            android:translationZ="1dp"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="4dp"
+    >
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+        >
+
+            <android.support.v7.widget.CardView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:cardBackgroundColor="@color/black"
+                    android:id="@+id/cv_profile_image"
+                    app:cardCornerRadius="32dp"
+                    app:cardElevation="4dp"
+            >
+
+                <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:scaleType="centerCrop"
+                        android:id="@+id/iv_profile_image"
+                        android:src="@drawable/selfie_place_holder"
+                />
+
+            </android.support.v7.widget.CardView>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_user_name"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/cv_profile_image"
+                    android:layout_marginStart="16dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/jet"
+                    android:text="Joan Miller"
+                    tools:ignore="HardcodedText"
+                    android:layout_toStartOf="@+id/rl_send_message"
+            />
+
+            <RelativeLayout
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/btn_next_step"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/rl_send_message"
+                    android:elevation="4dp"
+            >
+
+                <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_centerInParent="true"
+                        android:id="@+id/iv_send_message"
+                        android:src="@drawable/send_message"
+                />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/cv_user_details"
+            android:layout_below="@id/cv_top"
+            android:layout_marginTop="-44dp"
+            android:translationZ="0dp"
+            app:cardCornerRadius="24dp"
+            android:elevation="4dp"
+    >
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rl_user_details"
+                android:layout_marginTop="56dp"
+                android:layout_marginBottom="8dp"
+        >
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_age"
+
+            >
+
+                <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:id="@+id/iv_age"
+                        android:src="@drawable/age"
+                        android:layout_marginStart="12dp"
+                        android:layout_centerVertical="true"
+                />
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_age"
+                        android:text="24 years"
+                        android:textColor="@color/jet"
+                        android:textSize="16sp"
+                        android:layout_toEndOf="@id/iv_age"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="16dp"
+                        tools:ignore="HardcodedText"/>
+
+                <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:id="@+id/iv_zodiac"
+                        android:src="@drawable/sign"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="16dp"
+                        android:layout_centerVertical="true"
+                />
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_zodiac"
+                        android:text="Gemini"
+                        android:textColor="@color/jet"
+                        android:textSize="16sp"
+                        android:layout_toStartOf="@id/iv_zodiac"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        tools:ignore="HardcodedText"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_eat_times"
+                    android:layout_below="@id/rl_age"
+                    android:layout_marginTop="12dp"
+            >
+
+                <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:id="@+id/iv_eat_time_periods"
+                        android:src="@drawable/dinner"
+                        android:layout_marginStart="12dp"
+                        android:layout_centerVertical="true"
+                />
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_eat_time_periods"
+                        android:text="11:00 - 13:00, 20:00 21:00"
+                        android:textColor="@color/jet"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textSize="16sp"
+                        android:layout_toEndOf="@id/iv_eat_time_periods"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="16dp"
+                        tools:ignore="HardcodedText"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

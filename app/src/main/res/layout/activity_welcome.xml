@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".WelcomeActivity">
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/rl_intro_holder"
+            android:visibility="gone"
+    >
+
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:id="@+id/rl_1"
+        >
+            <ImageView
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:id="@+id/iv_logo"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+            />
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_below="@id/iv_logo"
+                    android:orientation="horizontal">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_food"
+                        android:textSize="32sp"
+                        android:text="Food"
+                        android:textColor="@color/jet"
+                        tools:ignore="HardcodedText"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_buddy"
+                        android:textSize="32sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/cinnamonSatin"
+                        android:text="Buddy"
+                        tools:ignore="HardcodedText"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/l_loading"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/rl_1"
+                android:layout_marginTop="32dp"
+                android:layout_centerHorizontal="true"
+                app:lottie_autoPlay="true"
+                app:lottie_fileName="loading.json"
+                app:lottie_loop="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/rl_after_anim_holder"
+    >
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rl_2"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_centerVertical="true">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_hello"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/jet"
+                    android:text="Hello!"
+                    tools:ignore="HardcodedText"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_email_label"
+                    android:layout_below="@id/tv_hello"
+                    android:layout_marginTop="24dp"
+                    android:textSize="15sp"
+                    android:textStyle="normal"
+                    android:textColor="@color/cinnamonSatin"
+                    android:text="Email Address"
+                    tools:ignore="HardcodedText"/>
+
+            <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:hint="email123@email.com"
+                    android:id="@+id/et_email"
+                    android:background="@drawable/round_edit_text"
+                    android:textSize="16sp"
+                    android:padding="12dp"
+                    android:layout_below="@id/tv_email_label"
+                    android:layout_marginTop="8dp"
+                    tools:ignore="HardcodedText"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_password_label"
+                    android:layout_below="@id/et_email"
+                    android:layout_marginTop="16dp"
+                    android:textSize="15sp"
+                    android:textStyle="normal"
+                    android:textColor="@color/cinnamonSatin"
+                    android:text="Password"
+                    tools:ignore="HardcodedText"/>
+
+            <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/et_password"
+                    android:hint="***********"
+                    android:inputType="textPassword"
+                    android:background="@drawable/round_edit_text"
+                    android:textSize="16sp"
+                    android:padding="12dp"
+                    android:layout_below="@id/tv_password_label"
+                    android:layout_marginTop="8dp" tools:ignore="HardcodedText"/>
+
+            <Button
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_login"
+                    android:layout_below="@id/et_password"
+                    android:layout_marginTop="48dp"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="@color/darkBlue"
+                    android:background="@drawable/btn_round_cinnamon"
+                    android:text="Login"
+                    tools:ignore="HardcodedText"/>
+
+        </RelativeLayout>
+
+        <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/l_success"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:scaleType="centerInside"
+                android:layout_below="@id/rl_2"
+                android:layout_marginTop="0dp"
+                android:layout_centerHorizontal="true"
+                app:lottie_autoPlay="false"
+                app:lottie_fileName="loading.json"
+                app:lottie_loop="true" />
+
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_1"
+                android:textColor="@color/darkBlue"
+                android:text="Don't have an account ?"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="24dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_register"
+                android:textColor="@color/cinnamonSatin"
+                android:text="Register"
+                android:layout_alignParentBottom="true"
+                android:layout_toEndOf="@id/tv_1"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="24dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

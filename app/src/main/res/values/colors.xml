@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#7EB2DD</color>
+    <color name="colorPrimaryDark">@color/jet</color>
+    <color name="colorAccent">#CC5A71</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="cinnamonSatin">#CC5A71</color>
+    <color name="diamond">#BADEFC</color>
+    <color name="darkBlue">#012A36</color>
+    <color name="metFloatingLabel">#191D32</color>
+    <color name="sunsetOrange">#FF7860</color>
+    
+    <!-->gradients<!-->
+    <color name="jet">#34344A</color>
+    <color name="darkBlueGray">#696996</color>
+
+</resources>

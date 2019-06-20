@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">FoodBuddy</string>
+    <string name="profilePicturePath">profilePicturePath</string>
+</resources>
