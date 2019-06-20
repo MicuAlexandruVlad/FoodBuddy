@@ -28,14 +28,14 @@ class DiscoverFragment : Fragment() {
 
     private lateinit var adapter: DiscoverAdapter
     private lateinit var foundUsers: ArrayList<User>
-    private lateinit var smallProfileBitmaps: ArrayList<String>
+    private lateinit var userImages: ArrayList<UserImage>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bundle = arguments!!
         currentUser = bundle.getSerializable("currentUser") as User
         foundUsers = bundle.getSerializable("found_users") as ArrayList<User>
-        smallProfileBitmaps = bundle.getStringArrayList("small_profile_bitmaps") as ArrayList<String>
+        userImages = bundle.getSerializable("user_images") as ArrayList<UserImage>
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -44,7 +44,7 @@ class DiscoverFragment : Fragment() {
         bindViews(view)
 
         adapter = DiscoverAdapter(foundUsers, context)
-        adapter.profilePics = smallProfileBitmaps
+        adapter.userImages = userImages
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.isNestedScrollingEnabled = false

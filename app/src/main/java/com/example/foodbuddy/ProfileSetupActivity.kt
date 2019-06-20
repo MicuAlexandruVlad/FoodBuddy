@@ -599,7 +599,6 @@ class ProfileSetupActivity : AppCompatActivity() {
                 userImage.smallProfileImageData = smallEncodedImage
                 userImage.normalProfileImageData = normalEncodedImage
                 userImage.userId = currentUser._id
-                userImage.galleryImageData = ""
 
                 val dbLinks = DBLinks()
                 val client = SyncHttpClient()
@@ -607,7 +606,6 @@ class ProfileSetupActivity : AppCompatActivity() {
                 params.put("isProfileImage", userImage.isProfileImage)
                 params.put("smallProfileImageData", userImage.smallProfileImageData)
                 params.put("normalProfileImageData", userImage.normalProfileImageData)
-                params.put("galleryImageData", userImage.galleryImageData)
                 params.put("userId", userImage.userId)
                 params.put("imageName", userImage.imageName)
 

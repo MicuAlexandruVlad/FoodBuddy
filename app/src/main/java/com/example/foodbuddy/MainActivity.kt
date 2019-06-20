@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     private var fromProfileSetup = false
     private lateinit var currentUser: User
     private lateinit var usersInSameArea: ArrayList<User>
-    private lateinit var smallBmp: ArrayList<String>
+    private lateinit var userImages: ArrayList<UserImage>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar!!.hide()
 
         usersInSameArea = ArrayList()
-        smallBmp = ArrayList()
+        userImages = ArrayList()
 
         currentUser = intent.getSerializableExtra("currentUser") as User
         fromProfileSetup = intent.getBooleanExtra("fromProfileSetup", false)
@@ -97,9 +97,10 @@ class MainActivity : AppCompatActivity() {
                         user = gson.fromJson(obj.toString(), User::class.java) as User
                         usersInSameArea.add(user)
 
-                        val userImages = response.getJSONArray("userImages")
-
-                        smallBmp.add(userImages.getJSONObject(index).getString("smallProfileImagePath"))
+                        val images = response.getJSONArray("userImages")
+                        var userImage = gson.fromJson(images.getJSONObject(index).toString(), UserImage::class.java) as UserImage
+                        userImage.id = images.getJSONObject(index).getString("_id")
+                        userImages.add(userImage)
                     }
 
                     Log.d(TAG, "Users found -> " + usersInSameArea.size)
@@ -115,7 +116,7 @@ class MainActivity : AppCompatActivity() {
                     val bundleMessages = Bundle()
                     val bundleDiscover = Bundle()
                     val bundleEvents = Bundle()
-                    bundleDiscover.putStringArrayList("small_profile_bitmaps", smallBmp)
+                    bundleDiscover.putSerializable("user_images", userImages)
                     bundleDiscover.putSerializable("found_users", usersInSameArea)
                     initAdapter(bundleMessages, bundleDiscover, bundleEvents, currentUser)
                 }

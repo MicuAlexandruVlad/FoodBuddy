@@ -7,4 +7,12 @@ class DBLinks {
     val updateUserData: String = baseLink + "users/update-user-data/"
     val uploadUserImage: String = baseLink + "user-images/upload-user-image/"
     val usersDiscover5: String = baseLink + "users/users-discover-5/"
+
+    fun getImageSmall(userId: String, imageId: String): String {
+        return baseLink + "user-images/profile-small/$userId/images/$imageId/"
+    }
+
+    fun getImageNormal(userId: String, imageId: String): String {
+        return baseLink + "user-images/profile-normal/$userId/images/$imageId/"
+    }
 }

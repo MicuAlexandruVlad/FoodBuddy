@@ -18,7 +18,8 @@ import com.bumptech.glide.Glide
 class DiscoverAdapter(private var items: ArrayList<User>,
                       private var context: Context?
                       ) : RecyclerView.Adapter<DiscoverAdapter.ViewHolder>() {
-    var profilePics: ArrayList<String> = ArrayList()
+    var userImages: ArrayList<UserImage> = ArrayList()
+    val dbLinks = DBLinks()
     private val TAG = "DiscoverAdapter"
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ViewHolder {
@@ -40,7 +41,11 @@ class DiscoverAdapter(private var items: ArrayList<User>,
         holder.eatTimePeriods.text = foundUser.eatTimePeriods
         holder.userAge.text = foundUser.age.toString() + " years"
 
-        context?.let { Glide.with(it).load(stringToBitmap(profilePics[position])).centerCrop().into(holder.profileImage) }
+
+
+        val userImage = userImages[position]
+        context?.let { Glide.with(it).load(dbLinks.getImageSmall(userImage.userId ,userImage.id))
+            .centerCrop().into(holder.profileImage) }
 
         holder.sendMessage.setOnClickListener {
             // TODO: launch chat activity

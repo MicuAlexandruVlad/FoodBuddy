@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import com.airbnb.lottie.LottieAnimationView
+import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.JsonHttpResponseHandler
@@ -72,10 +73,8 @@ class WelcomeActivity : AppCompatActivity() {
 
         currentUser = User()
 
-        email.setText("test@test.com")
+        email.setText("t@t.com")
         password.setText("testpass123")
-
-
 
         register.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
