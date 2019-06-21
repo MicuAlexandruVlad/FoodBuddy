@@ -6,6 +6,7 @@ import android.nfc.Tag
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.view.ViewPager
+import android.transition.Fade
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -37,10 +38,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        setupExitTransition()
+
         pager = findViewById(R.id.pager)
         loading = findViewById(R.id.rl_loading)
-
-        supportActionBar!!.hide()
 
         usersInSameArea = ArrayList()
         userImages = ArrayList()
@@ -131,6 +132,13 @@ class MainActivity : AppCompatActivity() {
                 super.onFailure(statusCode, headers, throwable, errorResponse)
             }
         })
+    }
+
+    private fun setupExitTransition() {
+        val fade = Fade()
+        fade.duration = 500
+        window.enterTransition = fade
+        window.exitTransition = fade
     }
 
 

@@ -7,8 +7,6 @@ class UserImage: Serializable {
     var userId = ""
     var imageName = ""
     var isProfileImage = false
-    var normalProfileImagePath = ""
-    var smallProfileImagePath = ""
     var normalProfileImageData = ""
     var smallProfileImageData = ""
 }

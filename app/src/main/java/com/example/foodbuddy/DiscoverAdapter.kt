@@ -1,7 +1,9 @@
 package com.example.foodbuddy
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.support.v7.widget.RecyclerView
@@ -16,10 +18,12 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 
 class DiscoverAdapter(private var items: ArrayList<User>,
-                      private var context: Context?
+                      private var context: Context?,
+                      private var currentUser: User
                       ) : RecyclerView.Adapter<DiscoverAdapter.ViewHolder>() {
     var userImages: ArrayList<UserImage> = ArrayList()
     val dbLinks = DBLinks()
+    val MESSAGE_ACTIVITY = 123
     private val TAG = "DiscoverAdapter"
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ViewHolder {
@@ -48,7 +52,11 @@ class DiscoverAdapter(private var items: ArrayList<User>,
             .centerCrop().into(holder.profileImage) }
 
         holder.sendMessage.setOnClickListener {
-            // TODO: launch chat activity
+            val intent = Intent(context, ChatActivity::class.java)
+            intent.putExtra("currentUser", currentUser)
+            intent.putExtra("foundUser", foundUser)
+            intent.putExtra("foundUserImage", userImage)
+            (context as Activity).startActivityForResult(intent, MESSAGE_ACTIVITY)
         }
     }
 
@@ -59,13 +67,5 @@ class DiscoverAdapter(private var items: ArrayList<User>,
         val userAge: TextView = view.findViewById(R.id.tv_age)
         val eatTimePeriods: TextView = view.findViewById(R.id.tv_eat_time_periods)
         val profileImage: ImageView = view.findViewById(R.id.iv_profile_image)
-    }
-
-    private fun stringToBitmap(data: String): Bitmap {
-
-        //TODO: try to upload the image without encoding too Base64
-        val bytes = Base64.decode(data, Base64.DEFAULT)
-        Log.d(TAG, "byte array size -> " + bytes.size)
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
     }
 }

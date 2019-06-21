@@ -1,5 +1,6 @@
 package com.example.foodbuddy
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
@@ -13,6 +14,10 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 
 class DiscoverFragment : Fragment() {
+
+    companion object {
+        const val FILTER_REQ_CODE = 14
+    }
 
     private val t = "DiscoverFragment"
 
@@ -43,7 +48,7 @@ class DiscoverFragment : Fragment() {
 
         bindViews(view)
 
-        adapter = DiscoverAdapter(foundUsers, context)
+        adapter = DiscoverAdapter(foundUsers, context, currentUser)
         adapter.userImages = userImages
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -69,6 +74,12 @@ class DiscoverFragment : Fragment() {
                 Log.d(t, "state -> $newState")
             }
         })
+
+        filter.setOnClickListener {
+            val intent = Intent(context, DiscoverFilterActivity::class.java)
+            intent.putExtra("currentUser", currentUser)
+            startActivityForResult(intent, FILTER_REQ_CODE)
+        }
 
         return view
     }

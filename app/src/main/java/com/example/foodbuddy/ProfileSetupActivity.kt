@@ -58,7 +58,8 @@ class ProfileSetupActivity : AppCompatActivity() {
 
     private var currentPhotoPath = ""
     private val TAG = "ProfileSetupActivity"
-    val REQUEST_IMAGE_CAPTURE = 1
+    private val REQUEST_IMAGE_CAPTURE = 1
+    private val REQUEST_GALLERY_IMAGE = 2
 
     private lateinit var parentIntent: Intent
     private lateinit var currentUser: User
@@ -170,14 +171,14 @@ class ProfileSetupActivity : AppCompatActivity() {
         animationUtils.generatePbAnim(stepProgress, 0, 1)
         stepProgress.animate()
         stepProgress.interpolator = AccelerateDecelerateInterpolator()
-        firstStep.visibility = View.VISIBLE
+        firstStep.visibility = View.GONE
         secondStep.visibility = View.GONE
         thirdStep.visibility = View.GONE
         fourthStep.visibility = View.GONE
         fifthStep.visibility = View.GONE
         sixthStep.visibility = View.GONE
         seventhStep.visibility = View.GONE
-        eighthStep.visibility = View.GONE
+        eighthStep.visibility = View.VISIBLE
 
         val spinnerArray = ArrayList<Int>()
         spinnerArray.add(1)
@@ -449,7 +450,10 @@ class ProfileSetupActivity : AppCompatActivity() {
         }
 
         openGallery.setOnClickListener {
-
+            val intent = Intent()
+            intent.type = "image/*"
+            intent.action = Intent.ACTION_GET_CONTENT
+            startActivityForResult(intent, REQUEST_GALLERY_IMAGE)
         }
 
         finishSetup.setOnClickListener {
@@ -565,28 +569,46 @@ class ProfileSetupActivity : AppCompatActivity() {
         }
     }
 
+    fun getPathFromURI(contentUri: Uri): String? {
+        var res: String? = null
+        val proj = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor = contentResolver.query(contentUri, proj, null, null, null)
+        if (cursor!!.moveToFirst()) {
+            val column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            res = cursor.getString(column_index)
+        }
+        cursor.close()
+        return res
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            // TODO: if screen is onn landscape and you take a picture and come back to this activity says originalBmp is null
+            // TODO: if screen is on landscape and you take a picture and come back to this activity says originalBmp is null
             // (maybe from recreating activity)
-            val originalBmp = BitmapFactory.decodeFile(currentPhotoPath)
+            var originalBmp = BitmapFactory.decodeFile(currentPhotoPath)
             Glide.with(this).load(originalBmp).centerCrop().into(profileImage)
             // saveImageLocally(originalBmp)
 
 
             Thread(Runnable {
                 val bao = ByteArrayOutputStream()
-                val smallBmp = Bitmap.createScaledBitmap(originalBmp, originalBmp.width / 4,
-                    originalBmp.height / 4, false)
+                val smallBmp = Bitmap.createScaledBitmap(originalBmp, originalBmp.width / 5,
+                    originalBmp.height / 5, false)
 
                 smallBmp.compress(Bitmap.CompressFormat.JPEG, 80, bao)
                 val smallBmpBytes = bao.toByteArray()
 
-
-                val normalResBmp = Bitmap.createScaledBitmap(originalBmp,
-                    originalBmp.width / 2, originalBmp.height / 2, false)
+                Log.d(TAG, "camera image byte count -> " + originalBmp.byteCount)
+                Log.d(TAG, "camera image height before loop -> " + originalBmp.height)
+                while (originalBmp.width * originalBmp.height > 3686400) {
+                    originalBmp = Bitmap.createScaledBitmap(originalBmp, (originalBmp.width / 1.2).toInt(),
+                        (originalBmp.height / 1.2).toInt(), false)
+                }
+                Log.d(TAG, "camera image byte count after loop -> " + originalBmp.byteCount)
+                Log.d(TAG, "camera image height after loop -> " + originalBmp.height)
                 val bao1 = ByteArrayOutputStream()
-                normalResBmp.compress(Bitmap.CompressFormat.JPEG, 50, bao1)
+                originalBmp.compress(Bitmap.CompressFormat.JPEG, 50, bao1)
+                Log.d(TAG, "camera image byte count after compression -> " + originalBmp.byteCount)
                 val normalResBmpBytes = bao1.toByteArray()
 
                 val smallEncodedImage = Base64.encodeToString(smallBmpBytes, Base64.DEFAULT)
@@ -600,37 +622,97 @@ class ProfileSetupActivity : AppCompatActivity() {
                 userImage.normalProfileImageData = normalEncodedImage
                 userImage.userId = currentUser._id
 
-                val dbLinks = DBLinks()
-                val client = SyncHttpClient()
                 val params = RequestParams()
                 params.put("isProfileImage", userImage.isProfileImage)
                 params.put("smallProfileImageData", userImage.smallProfileImageData)
                 params.put("normalProfileImageData", userImage.normalProfileImageData)
                 params.put("userId", userImage.userId)
                 params.put("imageName", userImage.imageName)
-
-                client.post(dbLinks.uploadUserImage, params, object : JsonHttpResponseHandler() {
-                    override fun onStart() {
-                        super.onStart()
-                    }
-
-                    override fun onSuccess(statusCode: Int, headers: Array<out Header>?, response: JSONObject?) {
-                        super.onSuccess(statusCode, headers, response)
-                        Log.d(TAG, "Image uploaded")
-                    }
-
-                    override fun onFailure(
-                        statusCode: Int,
-                        headers: Array<out Header>?,
-                        throwable: Throwable?,
-                        errorResponse: JSONObject?
-                    ) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse)
-                    }
-                })
+                postImage(params)
 
             }).start()
         }
+
+        if (requestCode == REQUEST_GALLERY_IMAGE && resultCode == Activity.RESULT_OK) {
+            if (data != null ) {
+                val uri = data.data
+                var galleryBitmap = MediaStore.Images.Media.getBitmap(contentResolver, data.data)
+                Glide.with(this).load(galleryBitmap).centerCrop().into(profileImage)
+
+                Thread(Runnable {
+
+                    val smallBao = ByteArrayOutputStream()
+                    val normalBao = ByteArrayOutputStream()
+
+                    val smallBmp = Bitmap.createScaledBitmap(galleryBitmap, galleryBitmap.width / 4,
+                        galleryBitmap.height / 4, false)
+
+                    smallBmp.compress(Bitmap.CompressFormat.JPEG, 80, smallBao)
+                    val smallBmpBytes = smallBao.toByteArray()
+
+                    Log.d(TAG, "gallery image height -> " + galleryBitmap.height)
+                    while (galleryBitmap.width * galleryBitmap.height > 3686400) {
+                        galleryBitmap = Bitmap.createScaledBitmap(galleryBitmap, (galleryBitmap.width / 1.2).toInt(),
+                            (galleryBitmap.height / 1.2).toInt(), false)
+                    }
+                    Log.d(TAG, "gallery image height after loop -> " + galleryBitmap.height)
+                    Log.d(TAG, "gallery image byte count before compression -> " + galleryBitmap.byteCount)
+                    galleryBitmap.compress(Bitmap.CompressFormat.JPEG, 50, normalBao)
+                    Log.d(TAG, "gallery image byte count after compression -> " + galleryBitmap.byteCount)
+                    val normalResBmpBytes = normalBao.toByteArray()
+
+                    val smallEncodedImage = Base64.encodeToString(smallBmpBytes, Base64.DEFAULT)
+                    val normalEncodedImage = Base64.encodeToString(normalResBmpBytes, Base64.DEFAULT)
+
+
+                    val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+
+                    userImage = UserImage()
+                    userImage.imageName = "JPEG_$timeStamp"
+                    userImage.isProfileImage = true
+                    userImage.smallProfileImageData = smallEncodedImage
+                    userImage.normalProfileImageData = normalEncodedImage
+                    userImage.userId = currentUser._id
+
+                    Log.d(TAG, "image name -> " + userImage.imageName)
+
+                    val params = RequestParams()
+                    params.put("isProfileImage", userImage.isProfileImage)
+                    params.put("smallProfileImageData", userImage.smallProfileImageData)
+                    params.put("normalProfileImageData", userImage.normalProfileImageData)
+                    params.put("userId", userImage.userId)
+                    params.put("imageName", userImage.imageName)
+                    postImage(params)
+
+                }).start()
+            }
+        }
+    }
+
+    private fun postImage(params: RequestParams) {
+        val dbLinks = DBLinks()
+        val client = SyncHttpClient()
+
+
+        client.post(dbLinks.uploadUserImage, params, object : JsonHttpResponseHandler() {
+            override fun onStart() {
+                super.onStart()
+            }
+
+            override fun onSuccess(statusCode: Int, headers: Array<out Header>?, response: JSONObject?) {
+                super.onSuccess(statusCode, headers, response)
+                Log.d(TAG, "Image uploaded")
+            }
+
+            override fun onFailure(
+                statusCode: Int,
+                headers: Array<out Header>?,
+                throwable: Throwable?,
+                errorResponse: JSONObject?
+            ) {
+                super.onFailure(statusCode, headers, throwable, errorResponse)
+            }
+        })
     }
 
     @SuppressLint("SimpleDateFormat")
