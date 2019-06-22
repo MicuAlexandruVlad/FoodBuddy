@@ -47,15 +47,14 @@ class DiscoverAdapter(private var items: ArrayList<User>,
 
 
 
-        val userImage = userImages[position]
-        context?.let { Glide.with(it).load(dbLinks.getImageSmall(userImage.userId ,userImage.id))
+
+        context?.let { Glide.with(it).load(dbLinks.getImageSmall(foundUser._id ,foundUser.profileImageId))
             .centerCrop().into(holder.profileImage) }
 
         holder.sendMessage.setOnClickListener {
             val intent = Intent(context, ChatActivity::class.java)
             intent.putExtra("currentUser", currentUser)
             intent.putExtra("foundUser", foundUser)
-            intent.putExtra("foundUserImage", userImage)
             (context as Activity).startActivityForResult(intent, MESSAGE_ACTIVITY)
         }
     }

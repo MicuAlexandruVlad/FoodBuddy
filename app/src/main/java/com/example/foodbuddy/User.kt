@@ -23,7 +23,7 @@ class User: Serializable {
     var profileSetupComplete: Boolean = false
     var student: Boolean = false
     var college: String = ""
-
-
+    var profileImageId: String = ""
+    var galleryImageIds = ArrayList<String>()
 
 }

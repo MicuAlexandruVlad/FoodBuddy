@@ -283,7 +283,6 @@
                     android:textSize="16sp"
                     android:text="Zodiac Sign"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="12dp"
                     android:textColor="@color/darkBlueGray"
                     android:layout_centerVertical="true"
                     tools:ignore="HardcodedText"/>
@@ -306,8 +305,241 @@
                 android:id="@+id/rv_zodiac_signs"
                 android:layout_below="@id/rl_zodiac"
                 android:layout_marginTop="12dp"
-                android:layout_marginBottom="100dp"
         />
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:id="@+id/tv_separator_3"
+                android:background="@color/jet"
+                android:layout_below="@id/rv_zodiac_signs"
+                android:layout_marginTop="16dp"
+        />
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rl_student"
+                android:layout_below="@id/tv_separator_3"
+                android:layout_marginTop="16dp"
+        >
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_6"
+                    android:textSize="16sp"
+                    android:text="Student"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
+                    android:textColor="@color/darkBlueGray"
+                    tools:ignore="HardcodedText"/>
+
+            <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cb_student"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="16dp"
+                    android:layout_centerVertical="true"
+            />
+
+        </RelativeLayout>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/met_college"
+                app:met_iconLeft="@drawable/university"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_below="@id/rl_student"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelText="College"
+                android:hint="University of Cambridge"
+                android:inputType="textCapWords"
+                android:visibility="gone"
+                tools:ignore="HardcodedText"/>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:id="@+id/tv_separator_4"
+                android:background="@color/jet"
+                android:layout_below="@id/met_college"
+                android:layout_marginTop="16dp"
+        />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_7"
+                android:textSize="16sp"
+                android:text="Eat times"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_below="@id/tv_separator_4"
+                android:textColor="@color/darkBlueGray"
+                tools:ignore="HardcodedText"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ll_eat_time"
+                android:weightSum="2"
+                android:layout_below="@id/tv_7"
+        >
+
+            <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp"
+            >
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/tv_start"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:text="Start Time"
+                        tools:ignore="HardcodedText"/>
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/met_start_time"
+                        android:clickable="false"
+                        android:focusable="false"
+                        app:met_textColor="@color/sunsetOrange"
+                        android:layout_below="@id/tv_start"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginTop="16dp"
+                        android:inputType="time"
+                        android:hint="11:00"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        tools:ignore="HardcodedText"/>
+
+            </RelativeLayout>
+
+            <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@color/md_grey_600"
+            />
+
+            <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="24dp"
+            >
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/tv_end"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:text="End Time"
+                        tools:ignore="HardcodedText"/>
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/met_end_time"
+                        android:clickable="false"
+                        android:focusable="false"
+                        app:met_textColor="@color/sunsetOrange"
+                        android:layout_below="@id/tv_end"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginTop="16dp"
+                        android:inputType="time"
+                        android:hint="13:00"
+                        android:textSize="20sp"
+                        android:textAlignment="center"
+                        tools:ignore="HardcodedText"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ll_eat_time"
+                android:id="@+id/rl_tolerance"
+                android:layout_marginTop="16dp"
+        >
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_8"
+                    android:textSize="16sp"
+                    android:layout_centerVertical="true"
+                    android:text="Tolerance"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="12dp"
+                    android:textColor="@color/darkBlueGray"
+                    tools:ignore="HardcodedText"/>
+
+            <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:id="@+id/iv_tolerance_info"
+                    android:src="@drawable/info_1"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="16dp"
+            />
+
+        </RelativeLayout>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_tolerance"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                tools:text="20"
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/sunsetOrange"
+                android:layout_below="@id/rl_tolerance"
+                tools:ignore="HardcodedText"/>
+
+        <com.xw.repo.BubbleSeekBar
+                android:id="@+id/bsb_tolerance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_tolerance"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="100dp"
+                app:bsb_hide_bubble="true"
+                app:bsb_track_color="@color/sunsetOrange"
+                app:bsb_section_text_color="@color/darkBlueGray"
+                app:bsb_second_track_color="@color/colorPrimaryDark"
+                app:bsb_max="60"
+                app:bsb_min="0"
+                app:bsb_progress="0"
+                app:bsb_section_text_position="below_section_mark"
+                app:bsb_touch_to_seek="true"/>
+
 
         <android.support.design.widget.FloatingActionButton
                 android:layout_width="wrap_content"

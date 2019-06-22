@@ -82,26 +82,39 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "userMinAge -> $minAge")
         Log.d(TAG, "userMaxAge -> $maxAge")
 
-        client.get(dbLinks.usersDiscover5, params, object : JsonHttpResponseHandler() {
+        client.get(dbLinks.usersDiscoverFilter, params, object : JsonHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Array<out Header>?, response: JSONObject?) {
                 super.onSuccess(statusCode, headers, response)
 
                 val status = response!!.getInt("status")
+                val usersArray = response.getJSONArray("users")
+                val usersImagesArray = response.getJSONArray("userImages")
                 if (status == HttpStatus.SC_OK) {
-                    val users = response.getJSONArray("users")
-
-                    for (index in 0 until users.length()) {
-                        var user: User
-                        val obj = users.getJSONObject(index)
-                        val gson = Gson()
-
-                        user = gson.fromJson(obj.toString(), User::class.java) as User
-                        usersInSameArea.add(user)
-
-                        val images = response.getJSONArray("userImages")
-                        var userImage = gson.fromJson(images.getJSONObject(index).toString(), UserImage::class.java) as UserImage
-                        userImage.id = images.getJSONObject(index).getString("_id")
+                    val userImages = ArrayList<UserImage>()
+                    for (index in 0 until usersImagesArray.length()) {
+                        val obj = usersImagesArray.getJSONObject(index)
+                        val userImage = UserImage()
+                        userImage.id = obj.getString("_id")
+                        userImage.userId = obj.getString("userId")
+                        userImage.isProfileImage = obj.getBoolean("isProfileImage")
                         userImages.add(userImage)
+                    }
+                    for (index in 0 until usersArray.length()) {
+                        val gson = Gson()
+                        val obj = usersArray.getJSONObject(index)
+                        val user = gson.fromJson(obj.toString(), User::class.java) as User
+                        for (i in 0 until userImages.size) {
+                            val image = userImages[i]
+                            if (user._id == image.userId) {
+                                if (image.isProfileImage) {
+                                    user.profileImageId = image.id
+                                }
+                                else {
+                                    user.galleryImageIds.add(image.id)
+                                }
+                            }
+                        }
+                        usersInSameArea.add(user)
                     }
 
                     Log.d(TAG, "Users found -> " + usersInSameArea.size)

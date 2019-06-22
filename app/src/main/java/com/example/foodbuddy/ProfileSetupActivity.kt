@@ -569,18 +569,6 @@ class ProfileSetupActivity : AppCompatActivity() {
         }
     }
 
-    fun getPathFromURI(contentUri: Uri): String? {
-        var res: String? = null
-        val proj = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = contentResolver.query(contentUri, proj, null, null, null)
-        if (cursor!!.moveToFirst()) {
-            val column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-            res = cursor.getString(column_index)
-        }
-        cursor.close()
-        return res
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             // TODO: if screen is on landscape and you take a picture and come back to this activity says originalBmp is null
