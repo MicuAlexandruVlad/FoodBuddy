@@ -47,22 +47,27 @@ class DiscoverFragment : Fragment() {
 
     private lateinit var adapter: DiscoverAdapter
     private lateinit var foundUsers: ArrayList<User>
+    private lateinit var timeFilteredUsers: ArrayList<User>
     private lateinit var userImages: ArrayList<UserImage>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bundle = arguments!!
+        timeFilteredUsers = ArrayList()
         currentUser = bundle.getSerializable("currentUser") as User
         foundUsers = bundle.getSerializable("found_users") as ArrayList<User>
         userImages = bundle.getSerializable("user_images") as ArrayList<UserImage>
         dbLinks = DBLinks()
         userFilter = DiscoverFilter()
+
         userFilter.city = currentUser.city
         userFilter.country = currentUser.country
         userFilter.minAge = currentUser.minAge
         userFilter.maxAge = currentUser.maxAge
         userFilter.gender = currentUser.genderToMeet
-        userFilter.eatTimes = currentUser.eatTimePeriods
+        userFilter.eatTimes = currentUser.eatTimePeriods.split("/")[0]
+
+        timeFilteredUsers.addAll(userFilter.filterByTime(foundUsers))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -70,7 +75,7 @@ class DiscoverFragment : Fragment() {
 
         bindViews(view)
 
-        adapter = DiscoverAdapter(foundUsers, context, currentUser)
+        adapter = DiscoverAdapter(timeFilteredUsers, context, currentUser)
         adapter.userImages = userImages
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -209,6 +214,8 @@ class DiscoverFragment : Fragment() {
                         }
                         foundUsers.add(user)
                     }
+                    timeFilteredUsers.clear()
+                    timeFilteredUsers.addAll(filter.filterByTime(foundUsers))
                     Log.d(TAG, "Found users -> " + foundUsers.size)
                     (context as Activity).runOnUiThread {
                         adapter.notifyDataSetChanged()
@@ -216,6 +223,7 @@ class DiscoverFragment : Fragment() {
                 }
                 else {
                     foundUsers.clear()
+                    timeFilteredUsers.clear()
                     (context as Activity).runOnUiThread {
                         adapter.notifyDataSetChanged()
                     }

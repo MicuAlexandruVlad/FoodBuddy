@@ -36,6 +36,7 @@ dependencies {
     implementation 'com.daimajia.androidanimations:library:2.3@aar'
     implementation 'com.squareup.okhttp3:okhttp:4.0.0-alpha02'
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'org.apache.commons:commons-lang3:3.6'
     implementation 'com.wada811:android-material-design-colors:3.0.0'
     implementation 'com.loopj.android:android-async-http:1.4.9'
     implementation 'com.github.bumptech.glide:glide:4.9.0'
