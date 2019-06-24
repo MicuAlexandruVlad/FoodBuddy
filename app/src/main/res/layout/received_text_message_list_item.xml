@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+>
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/received_message_body"
+            android:layout_alignParentStart="true"
+            android:id="@+id/ll_message_body"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical"
+    >
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_user_name"
+                tools:text="John Bayer"
+                android:textSize="16sp"
+                android:textColor="@color/sunsetOrange"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:textStyle="bold"
+        />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_message_text"
+                android:maxWidth="228dp"
+                android:layout_marginTop="12dp"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:layout_marginEnd="12dp"
+                android:layout_marginStart="12dp"
+                tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+        />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_timestamp"
+                tools:text="16 : 02"
+                android:textColor="@color/sunsetOrange"
+                android:layout_marginStart="12dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginTop="8dp"
+                android:textStyle="bold"
+        />
+
+    </LinearLayout>
+
+</RelativeLayout>

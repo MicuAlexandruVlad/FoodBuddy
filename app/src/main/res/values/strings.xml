@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">FoodBuddy</string>
     <string name="profilePicturePath">profilePicturePath</string>
+    <string name="first_message_place_holder">This is the first time you are talking to this person. Make sure you leave
+        a good impression :)
+    </string>
+
+
+    <!-->Settings<-->
+
+    <string name="mode">Mode</string>
 </resources>

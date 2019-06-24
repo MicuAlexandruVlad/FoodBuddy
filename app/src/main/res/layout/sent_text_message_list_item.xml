@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+>
+
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rl_message_body"
+            android:background="@drawable/sent_message_body"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+    >
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_message_text"
+                android:layout_alignParentTop="true"
+                android:maxWidth="228dp"
+                android:layout_marginTop="12dp"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:layout_marginEnd="12dp"
+                android:layout_marginStart="12dp"
+                tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+        />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_timestamp"
+                android:layout_below="@id/tv_message_text"
+                tools:text="16 : 02"
+                android:textColor="@color/sunsetOrange"
+                android:layout_marginStart="12dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="12dp"
+                android:textStyle="bold"
+        />
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,10 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
+        android:animateLayoutChanges="true"
+        android:id="@+id/rl_body"
+        android:orientation="vertical"
         tools:context=".SettingsActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ll_1"
+            android:orientation="vertical"
+            android:animateLayoutChanges="true"
+    >
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:id="@+id/tv_title"
+                android:textColor="@color/jet"
+                android:text="Settings"
+                android:layout_margin="16dp"
+                tools:ignore="HardcodedText"/>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:id="@+id/tv_visuals"
+                android:textColor="@color/sunsetOrange"
+                android:text="Visuals"
+                android:layout_marginStart="16dp"
+                tools:ignore="HardcodedText"/>
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rl_dynamic_colors"
+                android:layout_marginTop="4dp"
+        >
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dynamic colors"
+                    android:textSize="16sp"
+                    android:textColor="@color/md_blue_grey_600"
+                    android:layout_marginStart="16dp"
+                    android:layout_centerVertical="true"
+                    tools:ignore="HardcodedText"/>
+
+            <Switch
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/s_dynamic_colors"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="16dp"
+            />
+
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:id="@+id/rl_image_pick"
+        >
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pick an image to extract colors from"
+                    android:textSize="16sp"
+                    android:id="@+id/tv_1"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/jet"
+                    android:layout_marginStart="16dp"
+                    tools:ignore="HardcodedText"/>
+
+            <ImageView
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:id="@+id/iv_pick_image"
+                    android:layout_below="@id/tv_1"
+                    android:layout_marginTop="12dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/add"
+            />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rl_mode"
+                android:layout_marginTop="12dp"
+        >
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mode"
+                    android:textSize="16sp"
+                    android:textColor="@color/md_blue_grey_600"
+                    android:layout_marginStart="16dp"
+                    android:layout_centerVertical="true"
+                    tools:ignore="HardcodedText"/>
+
+            <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:id="@+id/iv_night"
+                    android:layout_toStartOf="@id/iv_day"
+                    android:src="@drawable/night_mode"
+            />
+
+            <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:id="@+id/iv_day"
+                    android:src="@drawable/day_mode"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_alignParentEnd="true"
+            />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
