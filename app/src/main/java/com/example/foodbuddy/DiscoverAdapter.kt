@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.util.Base64
 import android.util.Log
@@ -45,9 +46,6 @@ class DiscoverAdapter(private var items: ArrayList<User>,
         holder.eatTimePeriods.text = foundUser.eatTimePeriods
         holder.userAge.text = foundUser.age.toString() + " years"
 
-
-
-
         context?.let { Glide.with(it).load(dbLinks.getImageSmall(foundUser._id ,foundUser.profileImageId))
             .centerCrop().into(holder.profileImage) }
 
@@ -57,6 +55,21 @@ class DiscoverAdapter(private var items: ArrayList<User>,
             intent.putExtra("foundUser", foundUser)
             (context as Activity).startActivityForResult(intent, MESSAGE_ACTIVITY)
         }
+
+        holder.cvTop.setOnClickListener {
+            launchProfileDetailsActivity(foundUser)
+        }
+
+        holder.cvDetails.setOnClickListener {
+            launchProfileDetailsActivity(foundUser)
+        }
+    }
+
+    private fun launchProfileDetailsActivity(user: User) {
+        val intent = Intent(context, PreUserDetailsActivity::class.java)
+        intent.putExtra("user", user)
+        intent.putExtra("currentUser", currentUser)
+        context!!.startActivity(intent)
     }
 
     class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
@@ -66,5 +79,7 @@ class DiscoverAdapter(private var items: ArrayList<User>,
         val userAge: TextView = view.findViewById(R.id.tv_age)
         val eatTimePeriods: TextView = view.findViewById(R.id.tv_eat_time_periods)
         val profileImage: ImageView = view.findViewById(R.id.iv_profile_image)
+        val cvTop: CardView = view.findViewById(R.id.cv_top)
+        val cvDetails: CardView = view.findViewById(R.id.cv_user_details)
     }
 }

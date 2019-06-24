@@ -35,10 +35,10 @@ class DiscoverFilter: Serializable {
         var currentUserEndTimeStr = eatTimes.split(" - ")[1]
         Log.d(TAG, "current user end time before tolerance -> $currentUserEndTimeStr")
         currentUserEndTimeStr = addTolerance(currentUserEndTimeStr, tolerance)
-        val currentUserStartTime = currentUserStartTimeStr.split(":")[0].toDouble() +
-                currentUserStartTimeStr.split(":")[1].toDouble() / 100
-        val currentUserEndTime = currentUserEndTimeStr.split(":")[0].toDouble() +
-                currentUserEndTimeStr.split(":")[1].toDouble() / 100
+        val currentUserStartTime = currentUserStartTimeStr.split(":")[0].toDouble() * 100.00 +
+                currentUserStartTimeStr.split(":")[1].toDouble()
+        val currentUserEndTime = currentUserEndTimeStr.split(":")[0].toDouble() * 100.00 +
+                currentUserEndTimeStr.split(":")[1].toDouble()
         Log.d(TAG, "current user start time post tolerance -> $currentUserStartTime")
         Log.d(TAG, "current user end time post tolerance -> $currentUserEndTime")
         for (index in 0 until users.size) {
@@ -47,15 +47,13 @@ class DiscoverFilter: Serializable {
             for (i in 0 until eatTimePeriods.size) {
                 val startTimeStr = eatTimePeriods[i].split(" - ")[0]
                 val endTimeStr = eatTimePeriods[i].split(" - ")[1]
-                val startTime = startTimeStr.split(":")[0].toDouble() +
-                        startTimeStr.split(":")[1].toDouble() / 100
-                val endTime = endTimeStr.split(":")[0].toDouble() +
-                        endTimeStr.split(":")[1].toDouble() / 100
+                val startTime = startTimeStr.split(":")[0].toDouble() * 100.00 +
+                        startTimeStr.split(":")[1].toDouble()
+                val endTime = endTimeStr.split(":")[0].toDouble() * 100.00 +
+                        endTimeStr.split(":")[1].toDouble()
+                Log.d(TAG, "found user start time -> $startTime")
+                Log.d(TAG, "found user end time -> $endTime")
                 if (currentUserStartTime == startTime) {
-                    filteredUsers.add(user)
-                    break
-                }
-                if (currentUserEndTime == endTime) {
                     filteredUsers.add(user)
                     break
                 }
@@ -82,7 +80,7 @@ class DiscoverFilter: Serializable {
 
     @SuppressLint("SimpleDateFormat")
     private fun addTolerance(time: String, tolerance: Int): String {
-        val format = SimpleDateFormat("HH:MM")
+        val format = SimpleDateFormat("HH:mm")
         var date = format.parse(time)
         date = DateUtils.addMinutes(date, tolerance)
         Log.d(TAG, "Calendar time -> " + date.toString().split(" ")[3].split(":")[0] +

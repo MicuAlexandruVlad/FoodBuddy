@@ -8,9 +8,7 @@ import android.support.v4.view.ViewPager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.Toast
@@ -39,10 +37,7 @@ class DiscoverFragment : Fragment() {
     private lateinit var dbLinks: DBLinks
 
     private lateinit var parentPager:ViewPager
-    private lateinit var messages: ImageView
-    private lateinit var events: ImageView
     private lateinit var filter: RelativeLayout
-    private lateinit var header: RelativeLayout
     private lateinit var recyclerView: RecyclerView
 
     private lateinit var adapter: DiscoverAdapter
@@ -81,14 +76,6 @@ class DiscoverFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.isNestedScrollingEnabled = false
 
-        messages.setOnClickListener {
-            parentPager.currentItem = 0
-        }
-
-        events.setOnClickListener {
-            parentPager.currentItem = 2
-        }
-
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0)
@@ -114,10 +101,7 @@ class DiscoverFragment : Fragment() {
 
     private fun bindViews(view: View) {
         parentPager = activity!!.findViewById(R.id.pager)
-        messages = view.findViewById(R.id.iv_messages)
-        events = view.findViewById(R.id.iv_events)
         filter = view.findViewById(R.id.rl_filter)
-        header = view.findViewById(R.id.rl_discover_header)
         recyclerView = view.findViewById(R.id.rv_discover)
     }
 
@@ -178,6 +162,8 @@ class DiscoverFragment : Fragment() {
         params.put("zodiac", builder.toString())
         params.put("limit", 50)
 
+        foundUsers.clear()
+
         client.get(url, params, object : JsonHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Array<out Header>?, response: JSONObject?) {
                 super.onSuccess(statusCode, headers, response)
@@ -188,7 +174,6 @@ class DiscoverFragment : Fragment() {
                     val usersArray = response.getJSONArray("users")
                     val usersImagesArray = response.getJSONArray("userImages")
                     val userImages = ArrayList<UserImage>()
-                    foundUsers.clear()
                     for (index in 0 until usersImagesArray.length()) {
                         val obj = usersImagesArray.getJSONObject(index)
                         val userImage = UserImage()

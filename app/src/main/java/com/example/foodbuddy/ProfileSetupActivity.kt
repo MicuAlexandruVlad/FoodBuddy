@@ -171,14 +171,14 @@ class ProfileSetupActivity : AppCompatActivity() {
         animationUtils.generatePbAnim(stepProgress, 0, 1)
         stepProgress.animate()
         stepProgress.interpolator = AccelerateDecelerateInterpolator()
-        firstStep.visibility = View.GONE
+        firstStep.visibility = View.VISIBLE
         secondStep.visibility = View.GONE
         thirdStep.visibility = View.GONE
         fourthStep.visibility = View.GONE
         fifthStep.visibility = View.GONE
         sixthStep.visibility = View.GONE
         seventhStep.visibility = View.GONE
-        eighthStep.visibility = View.VISIBLE
+        eighthStep.visibility = View.GONE
 
         val spinnerArray = ArrayList<Int>()
         spinnerArray.add(1)

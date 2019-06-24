@@ -8,6 +8,61 @@
         android:animateLayoutChanges="true"
         tools:context=".MainActivity">
 
+    <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tb_main_toolbar"
+            android:background="@color/jet"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:visibility="gone"
+            android:theme="@style/MyActionBarTheme"
+    >
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:animateLayoutChanges="true"
+        >
+
+            <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:id="@+id/iv_left_icon"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/message"
+                    android:tint="@color/white"
+                    android:visibility="gone"
+            />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_main_toolbar_title"
+                    android:text="Messages"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_toEndOf="@id/iv_left_icon"
+                    android:textColor="@color/white"
+                    tools:ignore="HardcodedText"/>
+
+            <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:id="@+id/iv_right_icon"
+                    android:src="@drawable/discover"
+                    android:tint="@color/white"
+                    android:visibility="visible"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="16dp"
+            />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -27,6 +82,7 @@
     <android.support.v4.view.ViewPager
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/tb_main_toolbar"
             android:id="@+id/pager"
             android:visibility="gone"
     />

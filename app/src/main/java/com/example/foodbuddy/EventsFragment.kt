@@ -14,7 +14,6 @@ class EventsFragment : Fragment() {
     private lateinit var currentUser: User
 
     private lateinit var parentPager: ViewPager
-    private lateinit var discover: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,15 +26,10 @@ class EventsFragment : Fragment() {
 
         bindViews(view)
 
-        discover.setOnClickListener {
-            parentPager.currentItem = 1
-        }
-
         return view
     }
 
     private fun bindViews(view: View) {
         parentPager = activity!!.findViewById(R.id.pager)
-        discover = view.findViewById(R.id.iv_discover)
     }
 }

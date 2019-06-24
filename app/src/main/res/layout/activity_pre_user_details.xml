@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".PreUserDetailsActivity">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/ll_background"
+            android:translationZ="0dp"
+    >
+
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/iv_profile_image"
+                android:scaleType="centerCrop"
+        />
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/ll_gradient_overlay"
+            android:translationZ="1dp"
+    >
+
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/iv_gradient_overlay"
+                android:src="@drawable/transparent_jet_gradient"
+        />
+
+    </LinearLayout>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/rl_user_details"
+            android:translationZ="2dp"
+    >
+
+        <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rl_mid_section"
+                android:layout_centerVertical="true"
+        >
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_user_name"
+                    tools:text="Felicity Jones"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:textSize="36sp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+            />
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ll_user_location"
+                    app:layout_constraintTop_toBottomOf="@id/tv_user_name"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+
+            >
+
+                <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:id="@+id/iv_location"
+                        android:src="@drawable/location"
+                />
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_location"
+                        tools:text="Los Angels, United States of America"
+                        android:layout_marginStart="8dp"
+                        android:textSize="16sp"
+                        android:textColor="@color/white"
+                />
+
+            </LinearLayout>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_user_bio"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    app:layout_constraintTop_toBottomOf="@id/ll_user_location"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+            />
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:id="@+id/tv_separator_1"
+                    android:background="@color/jet"
+                    app:layout_constraintTop_toBottomOf="@id/tv_user_bio"
+                    android:layout_marginTop="12dp"
+            />
+
+            <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_send_message"
+                    app:layout_constraintTop_toBottomOf="@id/tv_separator_1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="40dp"
+            >
+
+                <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/iv_send_message"
+                        android:src="@drawable/message_white"
+                        android:layout_centerHorizontal="true"
+                />
+
+                <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/rl_message_btn"
+                        android:text="Send message"
+                        android:background="@drawable/btn_filter"
+                        android:textColor="@color/white"
+                        android:paddingTop="12dp"
+                        android:paddingBottom="12dp"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_below="@id/iv_send_message"
+                        android:layout_centerHorizontal="true"
+                        android:elevation="4dp"
+                        tools:ignore="HardcodedText">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tv_1"
+                            android:textColor="@color/white"
+                            android:text="Send message"
+                            android:textStyle="bold"
+                            android:layout_centerInParent="true"
+                            android:textAllCaps="true"
+                            android:textSize="16sp"
+                    />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </android.support.constraint.ConstraintLayout>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_2"
+                android:textSize="15sp"
+                android:textColor="@color/mutedWhite"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="20dp"
+                android:text="Start a conversation with this person so you can access their full profile"
+                android:textAlignment="center"
+                tools:ignore="HardcodedText"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

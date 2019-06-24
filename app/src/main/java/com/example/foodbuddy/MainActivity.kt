@@ -1,16 +1,21 @@
 package com.example.foodbuddy
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.nfc.Tag
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
+import android.support.v7.widget.Toolbar
 import android.transition.Fade
 import android.util.Base64
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.RelativeLayout
+import android.widget.TextView
 import com.google.gson.Gson
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.JsonHttpResponseHandler
@@ -23,11 +28,17 @@ import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
+    companion object {
+        const val TAG = "MainActivity"
+    }
+
     private lateinit var pager: ViewPager
     private lateinit var adapter: MainPagerAdapter
     private lateinit var loading: RelativeLayout
-
-    private val TAG = "MainActivity"
+    private lateinit var toolbar: Toolbar
+    private lateinit var leftIcon: ImageView
+    private lateinit var righIcon: ImageView
+    private lateinit var toolbarTitle: TextView
 
     private var fromProfileSetup = false
     private lateinit var currentUser: User
@@ -42,12 +53,67 @@ class MainActivity : AppCompatActivity() {
 
         pager = findViewById(R.id.pager)
         loading = findViewById(R.id.rl_loading)
+        toolbar = findViewById(R.id.tb_main_toolbar)
+        leftIcon = findViewById(R.id.iv_left_icon)
+        toolbarTitle = findViewById(R.id.tv_main_toolbar_title)
+        righIcon = findViewById(R.id.iv_right_icon)
+
+        setSupportActionBar(toolbar)
 
         usersInSameArea = ArrayList()
         userImages = ArrayList()
 
         currentUser = intent.getSerializableExtra("currentUser") as User
         fromProfileSetup = intent.getBooleanExtra("fromProfileSetup", false)
+
+        leftIcon.setOnClickListener {
+            if (pager.currentItem != 0)
+                pager.currentItem--
+        }
+
+        righIcon.setOnClickListener {
+            if (pager.currentItem != 2)
+                pager.currentItem++
+        }
+
+        pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(p0: Int) {
+
+            }
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+
+            }
+
+            @SuppressLint("SetTextI18n")
+            override fun onPageSelected(p0: Int) {
+                when (p0) {
+                    0 -> {
+                        // messages fragment selected
+                        toolbarTitle.text = "Messages"
+                        leftIcon.visibility = View.GONE
+                        righIcon.visibility = View.VISIBLE
+                        righIcon.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.discover))
+                    }
+                    1 -> {
+                        // discover fragment selected
+                        toolbarTitle.text = "Discover"
+                        leftIcon.visibility = View.VISIBLE
+                        righIcon.visibility = View.VISIBLE
+                        leftIcon.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.message))
+                        righIcon.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.event))
+                    }
+                    2 -> {
+                        // events fragment selected
+                        toolbarTitle.text = "Events"
+                        leftIcon.visibility = View.VISIBLE
+                        righIcon.visibility = View.GONE
+                        leftIcon.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.discover))
+                    }
+                }
+            }
+
+        })
 
         val currentUserCountry = currentUser.country
         val currentUserCity = currentUser.city
@@ -87,9 +153,9 @@ class MainActivity : AppCompatActivity() {
                 super.onSuccess(statusCode, headers, response)
 
                 val status = response!!.getInt("status")
-                val usersArray = response.getJSONArray("users")
-                val usersImagesArray = response.getJSONArray("userImages")
                 if (status == HttpStatus.SC_OK) {
+                    val usersArray = response.getJSONArray("users")
+                    val usersImagesArray = response.getJSONArray("userImages")
                     val userImages = ArrayList<UserImage>()
                     for (index in 0 until usersImagesArray.length()) {
                         val obj = usersImagesArray.getJSONObject(index)
@@ -126,6 +192,7 @@ class MainActivity : AppCompatActivity() {
                 runOnUiThread {
                     rl_loading.visibility = View.GONE
                     pager.visibility = View.VISIBLE
+                    toolbar.visibility = View.VISIBLE
 
                     val bundleMessages = Bundle()
                     val bundleDiscover = Bundle()

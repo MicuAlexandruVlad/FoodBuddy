@@ -6,6 +6,7 @@
 
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="mutedWhite">#80FFFFFF</color>
     <color name="cinnamonSatin">#CC5A71</color>
     <color name="diamond">#BADEFC</color>
     <color name="darkBlue">#012A36</color>

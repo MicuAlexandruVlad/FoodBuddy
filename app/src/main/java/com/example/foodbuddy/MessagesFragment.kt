@@ -14,7 +14,6 @@ class MessagesFragment : Fragment() {
     private lateinit var bundle: Bundle
     private lateinit var currentUser: User
 
-    private lateinit var discover: ImageView
     private lateinit var parentPager: ViewPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,15 +27,11 @@ class MessagesFragment : Fragment() {
 
         bindViews(view)
 
-        discover.setOnClickListener {
-            parentPager.currentItem = 1
-        }
 
         return view
     }
 
     private fun bindViews(view: View) {
         parentPager = activity!!.findViewById(R.id.pager)
-        discover = view.findViewById(R.id.iv_discover)
     }
 }

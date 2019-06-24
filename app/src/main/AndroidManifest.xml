@@ -22,6 +22,10 @@
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true"
             tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".PreUserDetailsActivity">
+        </activity>
+        <activity android:name=".UserDetailsActivity">
+        </activity>
         <activity android:name=".DiscoverFilterActivity">
         </activity>
         <activity android:name=".SettingsActivity">
