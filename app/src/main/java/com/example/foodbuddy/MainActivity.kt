@@ -1,21 +1,19 @@
 package com.example.foodbuddy
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.nfc.Tag
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
 import android.transition.Fade
-import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.google.firebase.FirebaseApp
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.JsonHttpResponseHandler
@@ -37,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var loading: RelativeLayout
     private lateinit var toolbar: Toolbar
     private lateinit var leftIcon: ImageView
-    private lateinit var righIcon: ImageView
+    private lateinit var rightIcon: ImageView
     private lateinit var toolbarTitle: TextView
 
     private var fromProfileSetup = false
@@ -49,6 +47,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        FirebaseApp.initializeApp(applicationContext)
+
         setupExitTransition()
 
         pager = findViewById(R.id.pager)
@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.tb_main_toolbar)
         leftIcon = findViewById(R.id.iv_left_icon)
         toolbarTitle = findViewById(R.id.tv_main_toolbar_title)
-        righIcon = findViewById(R.id.iv_right_icon)
+        rightIcon = findViewById(R.id.iv_right_icon)
 
         setSupportActionBar(toolbar)
 
@@ -66,12 +66,16 @@ class MainActivity : AppCompatActivity() {
         currentUser = intent.getSerializableExtra("currentUser") as User
         fromProfileSetup = intent.getBooleanExtra("fromProfileSetup", false)
 
+
+        FirebaseMessaging.getInstance().subscribeToTopic(currentUser._id)
+        Log.d(TAG, "subscribed to -> " + currentUser._id)
+
         leftIcon.setOnClickListener {
             if (pager.currentItem != 0)
                 pager.currentItem--
         }
 
-        righIcon.setOnClickListener {
+        rightIcon.setOnClickListener {
             if (pager.currentItem != 2)
                 pager.currentItem++
         }
@@ -92,22 +96,22 @@ class MainActivity : AppCompatActivity() {
                         // messages fragment selected
                         toolbarTitle.text = "Messages"
                         leftIcon.visibility = View.GONE
-                        righIcon.visibility = View.VISIBLE
-                        righIcon.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.discover))
+                        rightIcon.visibility = View.VISIBLE
+                        rightIcon.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.discover))
                     }
                     1 -> {
                         // discover fragment selected
                         toolbarTitle.text = "Discover"
                         leftIcon.visibility = View.VISIBLE
-                        righIcon.visibility = View.VISIBLE
+                        rightIcon.visibility = View.VISIBLE
                         leftIcon.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.message))
-                        righIcon.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.event))
+                        rightIcon.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.event))
                     }
                     2 -> {
                         // events fragment selected
                         toolbarTitle.text = "Events"
                         leftIcon.visibility = View.VISIBLE
-                        righIcon.visibility = View.GONE
+                        rightIcon.visibility = View.GONE
                         leftIcon.setImageDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.discover))
                     }
                 }

@@ -483,6 +483,7 @@ class ProfileSetupActivity : AppCompatActivity() {
                 params.put("student", currentUser.student)
                 params.put("zodiac", currentUser.zodiac)
                 params.put("college", currentUser.college)
+                params.put("deviceToken", currentUser.deviceToken)
 
                 val dbLinks = DBLinks()
 

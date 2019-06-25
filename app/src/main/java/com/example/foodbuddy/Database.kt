@@ -21,7 +21,7 @@ abstract class Database: RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context) = Room.databaseBuilder(context,
-            com.example.foodbuddy.Database::class.java, "test2.db")
+            com.example.foodbuddy.Database::class.java, "test3.db")
             .build()
     }
 }

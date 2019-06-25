@@ -24,6 +24,7 @@ class User: Serializable {
     var student: Boolean = false
     var college: String = ""
     var profileImageId: String = ""
+    var deviceToken: String = ""
     var galleryImageIds = ArrayList<String>()
 
 }

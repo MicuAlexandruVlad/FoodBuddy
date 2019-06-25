@@ -1,6 +1,7 @@
 package com.example.foodbuddy
 
 class DBLinks {
+    val socketLink: String = "http://192.168.0.19:4000/"
     private val baseLink: String = "http://192.168.0.19:3000/"
     val registerUserEmail: String = baseLink + "users/register-user-email/"
     val loginWithEmail: String = baseLink + "users/login-email/"

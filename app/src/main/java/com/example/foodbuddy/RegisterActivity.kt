@@ -72,6 +72,7 @@ class RegisterActivity : AppCompatActivity() {
                 params.put("student", user.student)
                 params.put("zodiac", user.zodiac)
                 params.put("college", user.college)
+                params.put("deviceToken", user.deviceToken)
 
                 client.post(dbLinks.registerUserEmail, params, object: JsonHttpResponseHandler() {
                     override fun onSuccess(statusCode: Int, headers: Array<out Header>?, response: JSONObject?) {

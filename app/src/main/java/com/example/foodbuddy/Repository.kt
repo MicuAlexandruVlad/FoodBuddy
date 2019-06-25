@@ -37,4 +37,8 @@ class Repository(context: Context) {
     fun getAllMessages(): List<Message> {
         return database.messageDAO().getAllMessages()
     }
+
+    fun deleteMessageById(messageId: Long) {
+        return database.messageDAO().deleteMessageById(messageId)
+    }
 }

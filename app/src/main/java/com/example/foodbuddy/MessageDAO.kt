@@ -20,4 +20,7 @@ interface MessageDAO {
 
     @Query("UPDATE Message SET imagePath= :path WHERE id= :id")
     fun updateImagePath(path: String, id: Int)
+
+    @Query("DELETE from Message WHERE id = :messageId")
+    fun deleteMessageById(messageId: Long)
 }

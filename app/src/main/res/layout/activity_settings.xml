@@ -109,29 +109,20 @@
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Mode"
+                    android:text="Night mode"
                     android:textSize="16sp"
                     android:textColor="@color/md_blue_grey_600"
                     android:layout_marginStart="16dp"
                     android:layout_centerVertical="true"
                     tools:ignore="HardcodedText"/>
 
-            <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:id="@+id/iv_night"
-                    android:layout_toStartOf="@id/iv_day"
-                    android:src="@drawable/night_mode"
-            />
-
-            <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:id="@+id/iv_day"
-                    android:src="@drawable/day_mode"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginStart="8dp"
+            <Switch
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/s_night_mode"
                     android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="16dp"
+                    android:layout_centerVertical="true"
             />
 
         </RelativeLayout>
