@@ -12,7 +12,7 @@ interface MessageDAO {
     @Query("SELECT * FROM Message")
     fun getAllMessages(): List<Message>
 
-    @Query("SELECT * FROM Message WHERE senderId = :userId ORDER BY id DESC LIMIT 1")
+    @Query("SELECT * FROM Message WHERE conversationId = :userId ORDER BY id DESC LIMIT 1")
     fun getLastMessageFromConversation(userId: String): Message
 
     @Query("SELECT * FROM Message WHERE conversationId = :conversationId ORDER BY id ASC")

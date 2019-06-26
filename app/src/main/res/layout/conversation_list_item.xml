@@ -8,10 +8,10 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.v7.widget.CardView
-            android:layout_width="52dp"
-            android:layout_height="52dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             app:cardElevation="4dp"
-            app:cardCornerRadius="20dp"
+            app:cardCornerRadius="30dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:layout_marginStart="16dp"
@@ -25,6 +25,7 @@
                 android:layout_height="match_parent"
                 tools:src="@drawable/selfie_place_holder"
                 android:id="@+id/iv_profile_image"
+                android:scaleType="centerCrop"
         />
 
     </android.support.v7.widget.CardView>
@@ -73,8 +74,8 @@
             android:paddingEnd="16dp"
             android:clipToPadding="false"
             android:layout_toEndOf="@id/cv_profile_image"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             tools:ignore="RtlSymmetry">
 
         <ImageView
@@ -113,12 +114,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/tv_new_messages"
-                    android:textSize="15sp"
+                    android:textSize="12sp"
                     android:textColor="@color/white"
                     android:layout_centerInParent="true"
                     tools:text="12"
                     android:textStyle="bold"
-                    android:padding="4dp"
+                    android:paddingStart="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:paddingEnd="8dp"
             />
 
         </RelativeLayout>

@@ -4,6 +4,6 @@ import java.io.Serializable
 
 class Conversation: Serializable {
     var conversationId: String = ""
-    var profilePhotoUrl: String = ""
+    var profilePhotoId: String = ""
     var lastMessage: Message = Message()
 }

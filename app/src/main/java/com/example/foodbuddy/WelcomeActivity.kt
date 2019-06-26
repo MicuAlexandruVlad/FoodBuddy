@@ -41,7 +41,7 @@ class WelcomeActivity : AppCompatActivity() {
     private lateinit var logo: ImageView
     private lateinit var introHolder: RelativeLayout
     private lateinit var afterIntro: RelativeLayout
-    private lateinit var  login: Button
+    private lateinit var login: Button
     private lateinit var register: TextView
     private lateinit var load: LottieAnimationView
 
@@ -71,7 +71,7 @@ class WelcomeActivity : AppCompatActivity() {
         buddyLogo.visibility = View.GONE
         load.visibility = View.INVISIBLE
 
-        repository = Repository(this@WelcomeActivity)
+        repository = Repository(this)
         currentUser = User()
         conversations = ArrayList()
 
@@ -199,6 +199,8 @@ class WelcomeActivity : AppCompatActivity() {
                     val id = ids[index]
                     val conversation = Conversation()
                     conversation.conversationId = id
+                    Log.d(TAG, "doInBackground: conversation id -> $id")
+
                     conversations.add(conversation)
                 }
 
@@ -208,12 +210,15 @@ class WelcomeActivity : AppCompatActivity() {
             override fun onPostExecute(result: Int?) {
                 super.onPostExecute(result)
                 for (index in 0 until conversations.size) {
-                    val conversation = conversations[index]
+                    var conversation = conversations[index]
+                    Log.d(TAG, "doInBackground: conversation id -> " + conversation.conversationId)
                     getLastMessageFromConversation(conversation)
                 }
 
                 Log.d(TAG, "Conversations -> " + conversations.size)
             }
+
+
         }.execute()
     }
 
@@ -221,7 +226,13 @@ class WelcomeActivity : AppCompatActivity() {
     private fun getLastMessageFromConversation(conversation: Conversation) {
         object : AsyncTask<Void, Void, Int>() {
             override fun doInBackground(vararg p0: Void?): Int? {
-                conversation.lastMessage = repository.getLastMessageForConversation(conversation.conversationId)
+                val gson = Gson()
+                Log.d(TAG, "doInBackground: conversation id -> " + conversation.conversationId)
+                Log.d(TAG, "doInBackground: conversation json -> " + gson.toJson(conversation))
+                val m = repository.getLastMessageForConversation(conversation.conversationId)
+
+                Log.d(TAG, "doInBackground: m json -> " + gson.toJson(m))
+                conversation.lastMessage = m
 
                 Log.d(TAG, "Last message for conversation with id: " + conversation.conversationId +
                         " -> " + conversation.lastMessage.messageText)
@@ -230,6 +241,7 @@ class WelcomeActivity : AppCompatActivity() {
             }
         }.execute()
     }
+
 
     private fun getImagesForConversations(intent: Intent) {
         val client = AsyncHttpClient()
@@ -258,7 +270,7 @@ class WelcomeActivity : AppCompatActivity() {
                         for (i in 0 until conversations.size) {
                             val conversation = conversations[i]
                             if (conversation.conversationId.compareTo(id, false) == 0) {
-                                conversation.profilePhotoUrl = obj.getString("smallProfileImagePath")
+                                conversation.profilePhotoId = obj.getString("_id")
                                 break
                             }
                         }

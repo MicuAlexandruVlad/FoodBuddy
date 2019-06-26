@@ -1,20 +1,12 @@
 package com.example.foodbuddy
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
-import android.util.Base64
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
 
@@ -40,7 +32,7 @@ class ConversationAdapter(private var items: ArrayList<Conversation>,
         val conversation = items[position]
 
         context?.let { Glide.with(it).load(dbLinks
-            .getImageSmall(conversation.conversationId, conversation.profilePhotoUrl)).into(holder.profileImage) }
+            .getImageSmall(conversation.conversationId, conversation.profilePhotoId)).into(holder.profileImage) }
 
         holder.userName.text = conversation.lastMessage.senderName
         holder.timestamp.text = formatTime(conversation.lastMessage.timestamp)
