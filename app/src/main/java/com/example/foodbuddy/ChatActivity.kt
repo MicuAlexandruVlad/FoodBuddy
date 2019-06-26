@@ -1,10 +1,13 @@
 package com.example.foodbuddy
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.AsyncTask
 import android.os.Bundle
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -19,9 +22,7 @@ import java.net.URISyntaxException
 import java.util.*
 import kotlin.collections.ArrayList
 import android.util.TypedValue
-import android.util.DisplayMetrics
 import android.view.*
-import com.google.gson.Gson
 import org.json.JSONObject
 
 
@@ -52,6 +53,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var body: ScrollView
 
     private var isKeyboardOpen = false
+    private var canDisplayNotification = false
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +65,8 @@ class ChatActivity : AppCompatActivity() {
         dbLinks = DBLinks()
         messages = ArrayList()
         repository = Repository(this)
+
+        canDisplayNotification = false
 
         bindViews()
 
@@ -78,11 +82,14 @@ class ChatActivity : AppCompatActivity() {
 
         reqMessages()
 
+        receiveMessage()
+
         toolbar.title = ""
         toolbarTitle.text = foundUser.firstName + " " + foundUser.lastName
         Glide.with(this).load(dbLinks.getImageSmall(foundUser._id, foundUser.profileImageId)).into(toolbarProfileImage)
 
         setSupportActionBar(toolbar)
+        broadcastNotificationFlag()
 
 
         val callback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
@@ -123,7 +130,7 @@ class ChatActivity : AppCompatActivity() {
                 message.senderName = currentUser.firstName + " " + currentUser.lastName
                 message.timestamp = getCurrentTime()
                 message.type = Message.MESSAGE_TEXT
-                message.conversationId = currentUser._id
+                message.conversationId = foundUser._id
 
                 val obj = JSONObject()
                 messageToJson(message, obj)
@@ -139,6 +146,21 @@ class ChatActivity : AppCompatActivity() {
                 layoutManager.scrollToPositionWithOffset(messages.size - 1, 0)
             }
         }
+    }
+
+    private fun receiveMessage() {
+        LocalBroadcastManager.getInstance(this).registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val message = intent.getSerializableExtra("message") as Message
+
+                messages.add(message)
+
+                runOnUiThread {
+                    messagesAdapter.notifyItemInserted(messages.size - 1)
+                    layoutManager.scrollToPositionWithOffset(messages.size - 1, 0)
+                }
+            }
+        }, IntentFilter("new-message"))
     }
 
     private fun messageToJson(message: Message, obj: JSONObject) {
@@ -228,4 +250,27 @@ class ChatActivity : AppCompatActivity() {
         }.execute()
     }
 
+    private fun broadcastNotificationFlag() {
+        val intent = Intent("display-notification")
+        intent.putExtra("notify", canDisplayNotification)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        canDisplayNotification = false
+        broadcastNotificationFlag()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        canDisplayNotification = true
+        broadcastNotificationFlag()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        canDisplayNotification = true
+        broadcastNotificationFlag()
+    }
 }

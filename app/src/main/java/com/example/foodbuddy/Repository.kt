@@ -34,6 +34,14 @@ class Repository(context: Context) {
         return database.messageDAO().getMessagesForConversation(conversationId)
     }
 
+    fun getLastMessageForConversation(conversationId: String): Message {
+        return database.messageDAO().getLastMessageFromConversation(conversationId)
+    }
+
+    fun getConversationIds(): List<String> {
+        return database.messageDAO().getConversationIds()
+    }
+
     fun getAllMessages(): List<Message> {
         return database.messageDAO().getAllMessages()
     }

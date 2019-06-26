@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_message_text"
                 android:layout_alignParentTop="true"
-                android:maxWidth="228dp"
+                android:maxWidth="240dp"
                 android:layout_marginTop="12dp"
                 android:textSize="16sp"
                 android:textColor="@color/white"

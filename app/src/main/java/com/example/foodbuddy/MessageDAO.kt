@@ -18,6 +18,9 @@ interface MessageDAO {
     @Query("SELECT * FROM Message WHERE conversationId = :conversationId ORDER BY id ASC")
     fun getMessagesForConversation(conversationId: String): List<Message>
 
+    @Query("SELECT DISTINCT conversationId FROM Message GROUP BY conversationId")
+    fun getConversationIds(): List<String>
+
     @Query("UPDATE Message SET imagePath= :path WHERE id= :id")
     fun updateImagePath(path: String, id: Int)
 

@@ -26,5 +26,7 @@ class Message: Serializable {
     var type: Int = 1
     var seen: Boolean = false
     var seenAt: String = ""
+    var read: Boolean = false
+    var readAt: String = ""
     var conversationId: String = ""
 }

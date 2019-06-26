@@ -1,13 +1,18 @@
 package com.example.foodbuddy
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.media.RingtoneManager
+import android.os.AsyncTask
 import android.os.Build
 import android.support.v4.app.NotificationCompat
+import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -21,14 +26,24 @@ class MessageService: FirebaseMessagingService() {
     private lateinit var repository: Repository
     private lateinit var gson: Gson
     private lateinit var dbLinks: DBLinks
-    private var canDisplayNotification = true
+    private lateinit var conversationIds: ArrayList<String>
+    private var canDisplayNotification = false
 
     override fun onCreate() {
         super.onCreate()
         repository = Repository(this)
         gson = Gson()
         dbLinks = DBLinks()
+        conversationIds = ArrayList()
+        getConversationIds(conversationIds)
         Log.d(TAG, "Service created")
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                canDisplayNotification = intent.getBooleanExtra("notify", false)
+                Log.d(TAG, "onCreate: allow notification -> $canDisplayNotification")
+            }
+        }, IntentFilter("display-notification"))
     }
 
     override fun onMessageReceived(p0: RemoteMessage?) {
@@ -40,7 +55,13 @@ class MessageService: FirebaseMessagingService() {
             Log.d(TAG, "received message data -> $data")
 
             val message = gson.fromJson(data.toString(), Message::class.java)
-            sendNotification(message.messageText, message.senderName)
+            if (message.type == Message.MESSAGE_TEXT) {
+                message.conversationId = message.senderId
+                repository.insertMessage(message)
+                broadcastMessage(message)
+                if (canDisplayNotification)
+                    sendNotification(message.messageText, message.senderName)
+            }
         }
     }
 
@@ -75,5 +96,26 @@ class MessageService: FirebaseMessagingService() {
         }
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private fun getConversationIds(ids: ArrayList<String>) {
+        object : AsyncTask<Void, Void, Long>() {
+            override fun doInBackground(vararg voids: Void): Long? {
+                ids.addAll(repository.getConversationIds())
+
+                return 0
+            }
+
+            override fun onPostExecute(id: Long?) {
+                Log.d(Repository.TAG, "onPostExecute: distinct conversation ids -> " + ids.size)
+            }
+        }.execute()
+    }
+
+    private fun broadcastMessage(message: Message) {
+        val intent = Intent("new-message")
+        intent.putExtra("message", message)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 }

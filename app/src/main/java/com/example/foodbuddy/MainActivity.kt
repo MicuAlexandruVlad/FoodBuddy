@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var currentUser: User
     private lateinit var usersInSameArea: ArrayList<User>
     private lateinit var userImages: ArrayList<UserImage>
+    private lateinit var conversations: ArrayList<Conversation>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,9 +63,13 @@ class MainActivity : AppCompatActivity() {
 
         usersInSameArea = ArrayList()
         userImages = ArrayList()
+        conversations = ArrayList()
 
         currentUser = intent.getSerializableExtra("currentUser") as User
         fromProfileSetup = intent.getBooleanExtra("fromProfileSetup", false)
+        conversations = intent.getSerializableExtra("conversations") as ArrayList<Conversation>
+
+        Log.d(TAG, "conversations -> " + conversations.size)
 
 
         FirebaseMessaging.getInstance().subscribeToTopic(currentUser._id)
@@ -203,6 +208,7 @@ class MainActivity : AppCompatActivity() {
                     val bundleEvents = Bundle()
                     bundleDiscover.putSerializable("user_images", userImages)
                     bundleDiscover.putSerializable("found_users", usersInSameArea)
+                    bundleMessages.putSerializable("conversations", conversations)
                     initAdapter(bundleMessages, bundleDiscover, bundleEvents, currentUser)
                 }
             }

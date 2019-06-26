@@ -48,7 +48,6 @@ class MessageAdapter (private var messages: ArrayList<Message>,
             1 -> {
                 val holder = p0 as ReceivedMessageViewHolder
                 holder.messageText.text = message.messageText
-                holder.userName.text = message.senderName
                 holder.timestamp.text = formatTime(message.timestamp)
             }
         }
@@ -67,7 +66,6 @@ class MessageAdapter (private var messages: ArrayList<Message>,
     class ReceivedMessageViewHolder (view: View) : RecyclerView.ViewHolder(view) {
         val messageText: TextView = view.findViewById(R.id.tv_message_text)
         val timestamp: TextView = view.findViewById(R.id.tv_timestamp)
-        val userName: TextView = view.findViewById(R.id.tv_user_name)
         val body: LinearLayout = view.findViewById(R.id.ll_message_body)
     }
 

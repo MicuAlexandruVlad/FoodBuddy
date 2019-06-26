@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.CardView
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/cv_profile_image"
+    >
+
+
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:src="@drawable/selfie_place_holder"
+                android:id="@+id/iv_profile_image"
+        />
+
+    </android.support.v7.widget.CardView>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rl_top"
+            android:layout_marginEnd="16dp"
+            android:layout_toEndOf="@id/cv_profile_image"
+            android:layout_marginTop="8dp"
+    >
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_user_name"
+                android:layout_centerVertical="true"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/jet"
+                tools:text="Andrea Olivie"
+                android:layout_marginStart="12dp"
+        />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_timestamp"
+                android:textStyle="normal"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:textSize="15sp"
+                android:textColor="@color/md_grey_500"
+                tools:text="17: 04"
+                android:layout_marginStart="12dp"
+        />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rl_bottom"
+            android:layout_below="@id/rl_top"
+            android:paddingEnd="16dp"
+            android:clipToPadding="false"
+            android:layout_toEndOf="@id/cv_profile_image"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            tools:ignore="RtlSymmetry">
+
+        <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:id="@+id/iv_seen"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/seen"
+                android:layout_marginStart="12dp"
+                android:layout_centerVertical="true"
+        />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_message_text"
+                android:layout_toEndOf="@id/iv_seen"
+                android:layout_centerVertical="true"
+                android:textStyle="normal"
+                android:textSize="16sp"
+                android:textColor="@color/jet"
+                tools:text="Hi! How are you ?"
+                android:layout_marginStart="12dp"
+        />
+
+        <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/rl_new_messages"
+                android:background="@drawable/layout_round_sunset"
+                android:elevation="8dp"
+                android:layout_alignParentEnd="true"
+        >
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_new_messages"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    android:layout_centerInParent="true"
+                    tools:text="12"
+                    android:textStyle="bold"
+                    android:padding="4dp"
+            />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
