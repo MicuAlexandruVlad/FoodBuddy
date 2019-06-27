@@ -278,6 +278,58 @@ class WelcomeActivity : AppCompatActivity() {
                     val gson = Gson()
                     Log.d(TAG, "conversation data -> " + gson.toJson(conversations))
                 }
+                getUsersForConversations(intent, builder.toString())
+            }
+        })
+    }
+
+    private fun getUsersForConversations(intent: Intent, ids: String) {
+        val client = AsyncHttpClient()
+        val params = RequestParams()
+
+
+        params.put("ids", ids)
+        client.get(dbLinks.getUserById, params, object : JsonHttpResponseHandler() {
+            override fun onSuccess(statusCode: Int, headers: Array<out Header>?, response: JSONObject?) {
+                super.onSuccess(statusCode, headers, response)
+
+                val status = response!!.getInt("status")
+
+                if (status == HttpStatus.SC_OK) {
+                    val array = response.getJSONArray("users")
+                    for (index in 0 until array.length()) {
+                        val obj = array.getJSONObject(index)
+                        val id = obj.getString("_id")
+                        for (i in 0 until conversations.size) {
+                            val conversation = conversations[i]
+                            if (conversation.conversationId.compareTo(id, false) == 0) {
+                                val user = User()
+                                user._id = id
+                                user.firstName = obj.getString("firstName")
+                                user.lastName = obj.getString("lastName")
+                                user.bio = obj.getString("bio")
+                                user.gender = obj.getString("gender")
+                                user.age = obj.getInt("age")
+                                user.city = obj.getString("city")
+                                user.country = obj.getString("country")
+                                user.eatTimePeriods = obj.getString("eatTimePeriods")
+                                user.eatTimes = obj.getInt("eatTimes")
+                                user.birthDate = obj.getString("birthDate")
+                                user.genderToMeet = obj.getString("genderToMeet")
+                                user.maxAge = obj.getInt("maxAge")
+                                user.minAge = obj.getInt("minAge")
+                                user.profileSetupComplete = obj.getBoolean("profileSetupComplete")
+                                user.student = obj.getBoolean("student")
+                                user.zodiac = obj.getString("zodiac")
+                                user.college = obj.getString("college")
+                                conversation.conversationUser = user
+                                break
+                            }
+                        }
+                    }
+                    val gson = Gson()
+                    Log.d(TAG, "conversation data -> " + gson.toJson(conversations))
+                }
                 runOnUiThread {
                     Log.d(TAG, "conversations -> " + conversations.size)
                     intent.putExtra("conversations", conversations)

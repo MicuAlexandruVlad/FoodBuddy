@@ -108,6 +108,8 @@
                 android:id="@+id/rl_new_messages"
                 android:background="@drawable/layout_round_sunset"
                 android:elevation="8dp"
+                android:outlineAmbientShadowColor="@color/sunsetOrange"
+                android:outlineSpotShadowColor="@color/sunsetOrange"
                 android:layout_alignParentEnd="true"
         >
 

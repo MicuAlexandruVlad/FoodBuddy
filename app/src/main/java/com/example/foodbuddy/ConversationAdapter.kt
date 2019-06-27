@@ -2,11 +2,13 @@ package com.example.foodbuddy
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
 
@@ -38,6 +40,14 @@ class ConversationAdapter(private var items: ArrayList<Conversation>,
         holder.timestamp.text = formatTime(conversation.lastMessage.timestamp)
         holder.newMessages.text = "2"
         holder.lastMessageText.text = conversation.lastMessage.messageText
+        holder.body.setOnClickListener {
+            val intent = Intent(context, ChatActivity::class.java)
+            intent.putExtra("fromConversationAdapter", true)
+            intent.putExtra("conversation", conversation)
+            intent.putExtra("currentUser", currentUser)
+            context!!.startActivity(intent)
+        }
+
     }
 
     class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
@@ -47,6 +57,7 @@ class ConversationAdapter(private var items: ArrayList<Conversation>,
         val timestamp: TextView = view.findViewById(R.id.tv_timestamp)
         val lastMessageText: TextView = view.findViewById(R.id.tv_message_text)
         val newMessages: TextView = view.findViewById(R.id.tv_new_messages)
+        val body: RelativeLayout = view.findViewById(R.id.rl_body)
     }
 
     private fun formatTime(time: String): String {

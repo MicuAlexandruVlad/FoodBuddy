@@ -39,7 +39,7 @@
                         android:id="@+id/cv_toolbar_profile_image"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        app:cardCornerRadius="20dp"
+                        app:cardCornerRadius="24dp"
                         app:cardElevation="0dp"
                 >
 

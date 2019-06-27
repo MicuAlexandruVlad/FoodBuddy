@@ -41,6 +41,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var messagesAdapter: MessageAdapter
     private lateinit var socket: Socket
     private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var conversation: Conversation
 
     private lateinit var toolbar: Toolbar
     private lateinit var toolbarProfileImage: ImageView
@@ -54,6 +55,7 @@ class ChatActivity : AppCompatActivity() {
 
     private var isKeyboardOpen = false
     private var canDisplayNotification = false
+    private var fromConversationAdapter = false
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +63,16 @@ class ChatActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chat)
 
         currentUser = intent.getSerializableExtra("currentUser") as User
-        foundUser = intent.getSerializableExtra("foundUser") as User
+
+        fromConversationAdapter = intent.getBooleanExtra("fromConversationAdapter", false)
+        if (fromConversationAdapter) {
+            conversation = intent.getSerializableExtra("conversation") as Conversation
+            foundUser = conversation.conversationUser
+            foundUser.profileImageId = conversation.profilePhotoId
+        }
+        else {
+            foundUser = intent.getSerializableExtra("foundUser") as User
+        }
         dbLinks = DBLinks()
         messages = ArrayList()
         repository = Repository(this)
