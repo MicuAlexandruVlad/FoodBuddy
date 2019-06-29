@@ -1,6 +1,7 @@
 package com.example.foodbuddy
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -8,6 +9,8 @@ import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
 import android.transition.Fade
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -231,5 +234,20 @@ class MainActivity : AppCompatActivity() {
         window.exitTransition = fade
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item!!.itemId) {
+            R.id.edit_profile -> {
+                val intent = Intent(applicationContext, EditUserProfileActivity::class.java)
+                intent.putExtra("currentUser", currentUser)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 }

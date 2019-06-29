@@ -15,7 +15,936 @@
             android:id="@+id/rl_body"
     >
 
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rl_top"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="8dp"
+        >
 
+            <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:id="@+id/iv_back"
+                    android:layout_alignParentStart="true"
+                    android:src="@drawable/back_arrow"
+                    android:layout_marginStart="16dp"
+                    android:layout_centerVertical="true"
+                    android:tint="@color/sunsetOrange"
+            />
+
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_done"
+                    android:text="Done"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
+                    android:textColor="@color/sunsetOrange"
+                    android:background="@drawable/btn_semi_round_jet"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    tools:ignore="HardcodedText"/>
+
+        </RelativeLayout>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_title"
+                android:text="Edit Profile"
+                android:textSize="24sp"
+                android:textColor="@color/jet"
+                android:textStyle="bold"
+                android:layout_below="@id/rl_top"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                tools:ignore="HardcodedText"/>
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rl_change_profile_pic"
+                android:layout_below="@id/tv_title"
+                android:layout_marginTop="16dp"
+        >
+
+            <android.support.v7.widget.CardView
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:id="@+id/cv_profile_image"
+                    app:cardCornerRadius="70dp"
+                    android:layout_centerHorizontal="true"
+            >
+
+                <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/iv_profile_image"
+                        android:scaleType="centerCrop"
+                        tools:src="@drawable/selfie_place_holder"
+                />
+
+            </android.support.v7.widget.CardView>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_change_profile_pic"
+                    android:text="Change profile picture"
+                    android:layout_below="@id/cv_profile_image"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="8dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/sunsetOrange"
+                    tools:ignore="HardcodedText"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:id="@+id/rl_user_details"
+                android:animateLayoutChanges="true"
+                android:layout_below="@id/rl_change_profile_pic"
+                android:orientation="vertical"
+
+        >
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_first_name"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+            >
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_first_name_label"
+                        android:text="First name"
+                        android:textSize="16sp"
+                        android:textColor="@color/jet"
+                        tools:ignore="HardcodedText"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_first_name"
+                        tools:text="Andrea"
+                        android:layout_alignParentEnd="true"
+                        android:textSize="16sp"
+                        android:textColor="@color/sunsetOrange"
+                        tools:ignore="HardcodedText"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_edit_first_name"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:clipToPadding="false"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="4dp"
+                    android:visibility="gone"
+            >
+
+                <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_first_name"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/fab_first_name_done"
+                        android:layout_marginEnd="16dp"
+                        android:inputType="textCapWords"
+                        android:hint="First name"
+                        tools:ignore="HardcodedText"/>
+
+                <android.support.design.widget.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fab_first_name_done"
+                        android:backgroundTint="@color/jet"
+                        android:src="@drawable/done"
+                        app:elevation="4dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_last_name"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+            >
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_last_name_label"
+                        android:text="Last name"
+                        android:textSize="16sp"
+                        android:textColor="@color/jet"
+                        tools:ignore="HardcodedText"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_last_name"
+                        tools:text="Lima"
+                        android:layout_alignParentEnd="true"
+                        android:textSize="16sp"
+                        android:textColor="@color/sunsetOrange"
+                        tools:ignore="HardcodedText"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_edit_last_name"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:clipToPadding="false"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone"
+            >
+
+                <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_last_name"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/fab_last_name_done"
+                        android:layout_marginEnd="16dp"
+                        android:inputType="textCapWords"
+                        android:hint="Last name"
+                        tools:ignore="HardcodedText"/>
+
+                <android.support.design.widget.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fab_last_name_done"
+                        android:backgroundTint="@color/jet"
+                        android:src="@drawable/done"
+                        app:elevation="4dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_gender"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+            >
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_gender_label"
+                        android:text="Gender"
+                        android:textSize="16sp"
+                        android:textColor="@color/jet"
+                        tools:ignore="HardcodedText"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_gender"
+                        tools:text="Female"
+                        android:layout_alignParentEnd="true"
+                        android:textSize="16sp"
+                        android:textColor="@color/sunsetOrange"
+                        tools:ignore="HardcodedText"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_edit_gender"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:clipToPadding="false"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone"
+            >
+
+                <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/iv_gender_female"
+                        android:src="@drawable/female"
+                        android:layout_toStartOf="@id/v_separator_middle"
+                        android:tint="@color/black"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="12dp"
+                />
+
+                <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/v_separator_middle"
+                />
+
+                <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/iv_gender_male"
+                        android:layout_toEndOf="@id/v_separator_middle"
+                        android:src="@drawable/male"
+                        android:tint="@color/black"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="12dp"
+                />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_bio"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+            >
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_bio_label"
+                        android:text="Bio"
+                        android:textSize="16sp"
+                        android:textColor="@color/jet"
+                        tools:ignore="HardcodedText"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/tv_bio_label"
+                        android:layout_marginStart="60dp"
+                        android:textAlignment="textEnd"
+                        android:id="@+id/tv_bio"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        tools:text="I like eating sweat and sour food"
+                        android:layout_alignParentEnd="true"
+                        android:textSize="16sp"
+                        android:textColor="@color/sunsetOrange"
+                        tools:ignore="HardcodedText"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_edit_bio"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:clipToPadding="false"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone"
+            >
+
+                <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_bio"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/fab_bio_done"
+                        android:layout_marginEnd="16dp"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:hint="Bio"
+                        tools:ignore="HardcodedText"/>
+
+                <android.support.design.widget.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fab_bio_done"
+                        android:backgroundTint="@color/jet"
+                        android:src="@drawable/done"
+                        app:elevation="4dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_city"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+            >
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_city_label"
+                        android:text="City"
+                        android:textSize="16sp"
+                        android:textColor="@color/jet"
+                        tools:ignore="HardcodedText"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/tv_city_label"
+                        android:layout_marginStart="60dp"
+                        android:textAlignment="textEnd"
+                        android:id="@+id/tv_city"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        tools:text="Bucharest"
+                        android:layout_alignParentEnd="true"
+                        android:textSize="16sp"
+                        android:textColor="@color/sunsetOrange"
+                        tools:ignore="HardcodedText"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_edit_city"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:clipToPadding="false"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone"
+            >
+
+                <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_city"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/fab_city_done"
+                        android:layout_marginEnd="16dp"
+                        android:inputType="textCapWords"
+                        android:hint="City"
+                        tools:ignore="HardcodedText"/>
+
+                <android.support.design.widget.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fab_city_done"
+                        android:backgroundTint="@color/jet"
+                        android:src="@drawable/done"
+                        app:elevation="4dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_country"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+            >
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_country_label"
+                        android:text="City"
+                        android:textSize="16sp"
+                        android:textColor="@color/jet"
+                        tools:ignore="HardcodedText"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/tv_country_label"
+                        android:layout_marginStart="60dp"
+                        android:textAlignment="textEnd"
+                        android:id="@+id/tv_country"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        tools:text="Romania"
+                        android:layout_alignParentEnd="true"
+                        android:textSize="16sp"
+                        android:textColor="@color/sunsetOrange"
+                        tools:ignore="HardcodedText"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_edit_country"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:clipToPadding="false"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone"
+            >
+
+                <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_country"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/fab_country_done"
+                        android:layout_marginEnd="16dp"
+                        android:inputType="textCapWords"
+                        android:hint="Country"
+                        tools:ignore="HardcodedText"/>
+
+                <android.support.design.widget.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fab_country_done"
+                        android:backgroundTint="@color/jet"
+                        android:src="@drawable/done"
+                        app:elevation="4dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_gender_to_meet"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+            >
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_gender_to_meet_label"
+                        android:text="Gender to meet"
+                        android:textSize="16sp"
+                        android:textColor="@color/jet"
+                        tools:ignore="HardcodedText"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/tv_gender_to_meet_label"
+                        android:layout_marginStart="60dp"
+                        android:textAlignment="textEnd"
+                        android:id="@+id/tv_gender_to_meet"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        tools:text="Female"
+                        android:layout_alignParentEnd="true"
+                        android:textSize="16sp"
+                        android:textColor="@color/sunsetOrange"
+                        tools:ignore="HardcodedText"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_edit_gender_to_meet"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:clipToPadding="false"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone"
+            >
+
+                <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/iv_gender_to_meet_female"
+                        android:src="@drawable/female"
+                        android:layout_toStartOf="@id/v_separator_middle_1"
+                        android:tint="@color/black"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="12dp"
+                />
+
+                <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/v_separator_middle_1"
+                />
+
+                <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/iv_gender_to_meet_male"
+                        android:layout_toEndOf="@id/v_separator_middle_1"
+                        android:src="@drawable/male"
+                        android:tint="@color/black"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="12dp"
+                />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_min_age"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+            >
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_min_age_label"
+                        android:text="Min age"
+                        android:textSize="16sp"
+                        android:textColor="@color/jet"
+                        tools:ignore="HardcodedText"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/tv_min_age_label"
+                        android:layout_marginStart="60dp"
+                        android:textAlignment="textEnd"
+                        android:id="@+id/tv_min_age"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        tools:text="21"
+                        android:layout_alignParentEnd="true"
+                        android:textSize="16sp"
+                        android:textColor="@color/sunsetOrange"
+                        tools:ignore="HardcodedText"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_edit_min_age"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:clipToPadding="false"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone"
+            >
+
+                <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_min_age"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/fab_min_age_done"
+                        android:layout_marginEnd="16dp"
+                        android:inputType="number"
+                        android:hint="21"
+                        tools:ignore="HardcodedText"/>
+
+                <android.support.design.widget.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fab_min_age_done"
+                        android:backgroundTint="@color/jet"
+                        android:src="@drawable/done"
+                        app:elevation="4dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_max_age"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+            >
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_max_age_label"
+                        android:text="Max age"
+                        android:textSize="16sp"
+                        android:textColor="@color/jet"
+                        tools:ignore="HardcodedText"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/tv_max_age_label"
+                        android:layout_marginStart="60dp"
+                        android:textAlignment="textEnd"
+                        android:id="@+id/tv_max_age"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        tools:text="24"
+                        android:layout_alignParentEnd="true"
+                        android:textSize="16sp"
+                        android:textColor="@color/sunsetOrange"
+                        tools:ignore="HardcodedText"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_edit_max_age"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:clipToPadding="false"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone"
+            >
+
+                <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_max_age"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/fab_max_age_done"
+                        android:layout_marginEnd="16dp"
+                        android:inputType="number"
+                        android:hint="24"
+                        tools:ignore="HardcodedText"/>
+
+                <android.support.design.widget.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fab_max_age_done"
+                        android:backgroundTint="@color/jet"
+                        android:src="@drawable/done"
+                        app:elevation="4dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_student"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+            >
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/tv_student_label"
+                        android:text="Student"
+                        android:textSize="16sp"
+                        android:textColor="@color/jet"
+                        tools:ignore="HardcodedText"/>
+
+                <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/cb_student"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_college"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:visibility="gone"
+            >
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_college_label"
+                        android:text="College"
+                        android:textSize="16sp"
+                        android:textColor="@color/jet"
+                        tools:ignore="HardcodedText"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/tv_college_label"
+                        android:layout_marginStart="60dp"
+                        android:textAlignment="textEnd"
+                        android:id="@+id/tv_college"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        tools:text="University of California"
+                        android:layout_alignParentEnd="true"
+                        android:textSize="16sp"
+                        android:textColor="@color/sunsetOrange"
+                        tools:ignore="HardcodedText"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_edit_college"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:clipToPadding="false"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone"
+            >
+
+                <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_college"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/fab_college_done"
+                        android:layout_marginEnd="16dp"
+                        android:inputType="textCapWords"
+                        android:hint="College"
+                        tools:ignore="HardcodedText"/>
+
+                <android.support.design.widget.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fab_college_done"
+                        android:backgroundTint="@color/jet"
+                        android:src="@drawable/done"
+                        app:elevation="4dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_zodiac"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+            >
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_zodiac_label"
+                        android:text="Zodiac"
+                        android:textSize="16sp"
+                        android:textColor="@color/jet"
+                        tools:ignore="HardcodedText"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/tv_zodiac_label"
+                        android:layout_marginStart="60dp"
+                        android:textAlignment="textEnd"
+                        android:id="@+id/tv_zodiac"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        tools:text="Gemini"
+                        android:layout_alignParentEnd="true"
+                        android:textSize="16sp"
+                        android:textColor="@color/sunsetOrange"
+                        tools:ignore="HardcodedText"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_edit_zodiac"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:clipToPadding="false"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone"
+            >
+
+                <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_zodiac"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/fab_zodiac_done"
+                        android:layout_marginEnd="16dp"
+                        android:inputType="textCapWords"
+                        android:hint="24"
+                        tools:ignore="HardcodedText"/>
+
+                <android.support.design.widget.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fab_zodiac_done"
+                        android:backgroundTint="@color/jet"
+                        android:src="@drawable/done"
+                        app:elevation="4dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                />
+
+            </RelativeLayout>
+
+        </LinearLayout>
 
     </RelativeLayout>
 
