@@ -76,6 +76,7 @@
                     android:id="@+id/cv_profile_image"
                     app:cardCornerRadius="70dp"
                     android:layout_centerHorizontal="true"
+                    android:animateLayoutChanges="true"
             >
 
                 <ImageView
@@ -240,6 +241,76 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/fab_last_name_done"
+                        android:backgroundTint="@color/jet"
+                        android:src="@drawable/done"
+                        app:elevation="4dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_birth_date"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+            >
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_birth_date_label"
+                        android:text="Birth date"
+                        android:textSize="16sp"
+                        android:textColor="@color/jet"
+                        tools:ignore="HardcodedText"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_birth_date"
+                        tools:text="19/01/2000"
+                        android:layout_alignParentEnd="true"
+                        android:textSize="16sp"
+                        android:textColor="@color/sunsetOrange"
+                        tools:ignore="HardcodedText"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rl_edit_birth_date"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:clipToPadding="false"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="8dp"
+                    android:visibility="gone"
+            >
+
+                <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_birth_date"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/fab_birth_date_done"
+                        android:layout_marginEnd="16dp"
+                        android:inputType="date"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:hint="01/01/2000"
+                        tools:ignore="HardcodedText"/>
+
+                <android.support.design.widget.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fab_birth_date_done"
                         android:backgroundTint="@color/jet"
                         android:src="@drawable/done"
                         app:elevation="4dp"
@@ -483,7 +554,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_country_label"
-                        android:text="City"
+                        android:text="Country"
                         android:textSize="16sp"
                         android:textColor="@color/jet"
                         tools:ignore="HardcodedText"/>
@@ -885,7 +956,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_zodiac_label"
-                        android:text="Zodiac"
+                        android:text="Zodiac sign"
                         android:textSize="16sp"
                         android:textColor="@color/jet"
                         tools:ignore="HardcodedText"/>
@@ -928,7 +999,7 @@
                         android:layout_toStartOf="@id/fab_zodiac_done"
                         android:layout_marginEnd="16dp"
                         android:inputType="textCapWords"
-                        android:hint="24"
+                        android:hint="Gemini"
                         tools:ignore="HardcodedText"/>
 
                 <android.support.design.widget.FloatingActionButton

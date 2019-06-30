@@ -1,6 +1,7 @@
 package com.example.foodbuddy
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val TAG = "MainActivity"
+        const val REQ_PROFILE_EDIT = 41
     }
 
     private lateinit var pager: ViewPager
@@ -244,10 +246,19 @@ class MainActivity : AppCompatActivity() {
             R.id.edit_profile -> {
                 val intent = Intent(applicationContext, EditUserProfileActivity::class.java)
                 intent.putExtra("currentUser", currentUser)
-                startActivity(intent)
+                startActivityForResult(intent, REQ_PROFILE_EDIT)
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQ_PROFILE_EDIT && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                currentUser = data.getSerializableExtra("currentUser") as User
+            }
         }
     }
 }
