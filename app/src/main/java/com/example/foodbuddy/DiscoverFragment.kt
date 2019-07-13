@@ -114,26 +114,28 @@ class DiscoverFragment : Fragment() {
                 filterChanged = data.getBooleanExtra("filterChanged", false)
                 Toast.makeText(context, "filter changed -> $filterChanged", Toast.LENGTH_SHORT).show()
 
-                var url = ""
-                if (!userFilter.isStudent && userFilter.zodiacSigns.size > 0) {
-                    url = dbLinks.zodiacOnlyFilter
+                if (filterChanged) {
+                    val url: String
+                    if (!userFilter.isStudent && userFilter.zodiacSigns.size > 0) {
+                        url = dbLinks.zodiacOnlyFilter
+                    }
+                    else if (userFilter.isStudent && userFilter.zodiacSigns.size == 0 && userFilter.collegeName.compareTo("") != 0) {
+                        url = dbLinks.studentCollegeFilter
+                    }
+                    else if (userFilter.isStudent && userFilter.zodiacSigns.size == 0 && userFilter.collegeName.compareTo("") == 0) {
+                        url = dbLinks.studentOnlyFilter
+                    }
+                    else if (userFilter.isStudent && userFilter.zodiacSigns.size > 0 && userFilter.collegeName.compareTo("") == 0) {
+                        url = dbLinks.studentZodiacFilter
+                    }
+                    else if (!userFilter.isStudent && userFilter.zodiacSigns.size == 0) {
+                        url = dbLinks.usersDiscoverFilter
+                    }
+                    else {
+                        url = dbLinks.fullFilter
+                    }
+                    reqUsers(userFilter, url)
                 }
-                else if (userFilter.isStudent && userFilter.zodiacSigns.size == 0 && userFilter.collegeName.compareTo("") != 0) {
-                    url = dbLinks.studentCollegeFilter
-                }
-                else if (userFilter.isStudent && userFilter.zodiacSigns.size == 0 && userFilter.collegeName.compareTo("") == 0) {
-                    url = dbLinks.studentOnlyFilter
-                }
-                else if (userFilter.isStudent && userFilter.zodiacSigns.size > 0 && userFilter.collegeName.compareTo("") == 0) {
-                    url = dbLinks.studentZodiacFilter
-                }
-                else if (!userFilter.isStudent && userFilter.zodiacSigns.size == 0) {
-                    url = dbLinks.usersDiscoverFilter
-                }
-                else {
-                    url = dbLinks.fullFilter
-                }
-                reqUsers(userFilter, url)
             }
         }
     }
@@ -163,6 +165,7 @@ class DiscoverFragment : Fragment() {
         params.put("limit", 50)
 
         foundUsers.clear()
+        adapter.notifyDataSetChanged()
 
         client.get(url, params, object : JsonHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Array<out Header>?, response: JSONObject?) {

@@ -141,7 +141,15 @@ class WelcomeActivity : AppCompatActivity() {
                                 val intent = Intent(applicationContext, MainActivity::class.java)
                                 intent.putExtra("currentUser", currentUser)
                                 intent.putExtra("fromProfileSetup", false)
-                                getImagesForConversations(intent)
+                                if (conversations.size > 0)
+                                    getImagesForConversations(intent)
+                                else{
+                                    runOnUiThread {
+                                        intent.putExtra("conversations", conversations)
+                                        startActivity(intent)
+                                    }
+                                }
+
                             }
                             else {
                                 val intent = Intent(applicationContext, ProfileSetupActivity::class.java)
@@ -278,7 +286,8 @@ class WelcomeActivity : AppCompatActivity() {
                     val gson = Gson()
                     Log.d(TAG, "conversation data -> " + gson.toJson(conversations))
                 }
-                getUsersForConversations(intent, builder.toString())
+                if (conversations.size > 0)
+                    getUsersForConversations(intent, builder.toString())
             }
         })
     }

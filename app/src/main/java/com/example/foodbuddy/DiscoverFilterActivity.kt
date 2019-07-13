@@ -254,6 +254,11 @@ class DiscoverFilterActivity : AppCompatActivity() {
             var collegeNameVal = ""
             val startTimeVal = startTime.text.toString()
             val endTimeVal = endTime.text.toString()
+            val genderToMeet: String = if (male.elevation > 0)
+                "Male"
+            else
+                "Female"
+
             if (student.isChecked) {
                 collegeNameVal = collegeName.text.toString()
             }
@@ -263,6 +268,7 @@ class DiscoverFilterActivity : AppCompatActivity() {
             else if (startTimeVal.compareTo("") == 0 || endTimeVal.compareTo("") == 0)
                 Toast.makeText(this, "One or more fields are empty", Toast.LENGTH_SHORT).show()
             else {
+                filter.gender = genderToMeet
                 filter.isStudent = student.isChecked
                 filter.collegeName = collegeNameVal
                 filter.minAge = minAgeTv.text.toString().toInt()

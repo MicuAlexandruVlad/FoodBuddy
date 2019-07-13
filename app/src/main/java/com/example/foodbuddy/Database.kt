@@ -7,6 +7,7 @@ import android.content.Context
 
 @Database(
     entities = [Message::class],
+    exportSchema = false,
     version = 1
 )
 abstract class Database: RoomDatabase() {
@@ -21,7 +22,7 @@ abstract class Database: RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context) = Room.databaseBuilder(context,
-            com.example.foodbuddy.Database::class.java, "test4.db")
+            com.example.foodbuddy.Database::class.java, "test5.db")
             .build()
     }
 }

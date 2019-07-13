@@ -43,6 +43,7 @@ class PreUserDetailsActivity : AppCompatActivity() {
             intent.putExtra("currentUser", currentUser)
             intent.putExtra("foundUser", foundUser)
             startActivity(intent)
+            finish()
         }
     }
 

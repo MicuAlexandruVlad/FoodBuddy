@@ -29,4 +29,5 @@ class Message: Serializable {
     var read: Boolean = false
     var readAt: String = ""
     var conversationId: String = ""
+    var ownerId: String = ""
 }

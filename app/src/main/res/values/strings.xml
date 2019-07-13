@@ -10,4 +10,6 @@
 
     <string name="mode">Mode</string>
     <string name="default_notification_channel_id">fcm_default_channel</string>
+	<string name="no_messages">You have no conversations. Start a new one by finding a person in the Discover tab
+	</string>
 </resources>

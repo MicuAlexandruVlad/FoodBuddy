@@ -26,6 +26,7 @@ class MessageService: FirebaseMessagingService() {
     private lateinit var repository: Repository
     private lateinit var gson: Gson
     private lateinit var dbLinks: DBLinks
+    private lateinit var lastTextMessage: Message
     private lateinit var conversationIds: ArrayList<String>
     private var canDisplayNotification = false
 
@@ -34,8 +35,10 @@ class MessageService: FirebaseMessagingService() {
         repository = Repository(this)
         gson = Gson()
         dbLinks = DBLinks()
+        lastTextMessage = Message()
         conversationIds = ArrayList()
         getConversationIds(conversationIds)
+        getCurrentUser()
         Log.d(TAG, "Service created")
 
         LocalBroadcastManager.getInstance(this).registerReceiver(object : BroadcastReceiver() {
@@ -44,6 +47,16 @@ class MessageService: FirebaseMessagingService() {
                 Log.d(TAG, "onCreate: allow notification -> $canDisplayNotification")
             }
         }, IntentFilter("display-notification"))
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                lastTextMessage = intent.getSerializableExtra("message") as Message
+            }
+        }, IntentFilter("inserted-message"))
+    }
+
+    private fun getCurrentUser() {
+
     }
 
     override fun onMessageReceived(p0: RemoteMessage?) {
@@ -57,10 +70,15 @@ class MessageService: FirebaseMessagingService() {
             val message = gson.fromJson(data.toString(), Message::class.java)
             if (message.type == Message.MESSAGE_TEXT) {
                 message.conversationId = message.senderId
-                repository.insertMessage(message)
-                broadcastMessage(message)
-                if (canDisplayNotification)
-                    sendNotification(message.messageText, message.senderName)
+                // TODO: set the ownerID. But first store current
+                //  user id...or maybe all the data in Room
+                if (lastTextMessage.senderId.compareTo(message.senderId, false) != 0) {
+                    // message is not sent by the current user
+                    repository.insertMessage(message)
+                    broadcastMessage(message)
+                    if (canDisplayNotification)
+                        sendNotification(message.messageText, message.senderName)
+                }
             }
         }
     }

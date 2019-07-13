@@ -36,9 +36,11 @@ class ConversationAdapter(private var items: ArrayList<Conversation>,
         context?.let { Glide.with(it).load(dbLinks
             .getImageSmall(conversation.conversationId, conversation.profilePhotoId)).into(holder.profileImage) }
 
-        holder.userName.text = conversation.lastMessage.senderName
+        holder.userName.text = conversation.conversationUser.firstName + " " +
+                conversation.conversationUser.lastName
         holder.timestamp.text = formatTime(conversation.lastMessage.timestamp)
-        holder.newMessages.text = "2"
+        holder.newMessagesHolder.visibility = View.INVISIBLE
+        holder.newMessages.text = "0"
         holder.lastMessageText.text = conversation.lastMessage.messageText
         holder.body.setOnClickListener {
             val intent = Intent(context, ChatActivity::class.java)
@@ -57,6 +59,7 @@ class ConversationAdapter(private var items: ArrayList<Conversation>,
         val timestamp: TextView = view.findViewById(R.id.tv_timestamp)
         val lastMessageText: TextView = view.findViewById(R.id.tv_message_text)
         val newMessages: TextView = view.findViewById(R.id.tv_new_messages)
+        val newMessagesHolder: RelativeLayout = view.findViewById(R.id.rl_new_messages)
         val body: RelativeLayout = view.findViewById(R.id.rl_body)
     }
 

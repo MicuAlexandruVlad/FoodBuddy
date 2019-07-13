@@ -79,6 +79,8 @@ class ChatActivity : AppCompatActivity() {
 
         canDisplayNotification = false
 
+        Log.d(TAG, "chatting with -> " + foundUser._id)
+
         bindViews()
 
         try {
@@ -143,20 +145,52 @@ class ChatActivity : AppCompatActivity() {
                 message.type = Message.MESSAGE_TEXT
                 message.conversationId = foundUser._id
 
+                if (messages.size == 0)
+                    broadcastNewConversation(message)
+
                 val obj = JSONObject()
                 messageToJson(message, obj)
                 socket.emit("chat", obj)
+
+                broadcastMessageInserted(message)
 
                 repository.insertMessage(message)
                 messageField.setText("")
                 if (messages.size == 0)
                     noMessages.visibility = View.GONE
+                else
+                    broadcastLastMessage(message)
                 messages.add(message)
                 messagesAdapter.notifyItemInserted(messages.size - 1)
 
                 layoutManager.scrollToPositionWithOffset(messages.size - 1, 0)
+
             }
         }
+    }
+
+    private fun broadcastMessageInserted(message: Message) {
+        val intent = Intent("inserted-message")
+        intent.putExtra("message", message)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+    }
+
+    private fun broadcastLastMessage(message: Message) {
+        val intent = Intent("last-message")
+        intent.putExtra("message", message)
+        intent.putExtra("conversationId", conversation.conversationId)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+    }
+
+    private fun broadcastNewConversation(message: Message) {
+        val conversation = Conversation()
+        conversation.conversationUser = foundUser
+        conversation.lastMessage = message
+        conversation.profilePhotoId = foundUser.profileImageId
+
+        val intent = Intent("new-conversation")
+        intent.putExtra("conversation", conversation)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
     private fun receiveMessage() {
@@ -164,11 +198,13 @@ class ChatActivity : AppCompatActivity() {
             override fun onReceive(context: Context, intent: Intent) {
                 val message = intent.getSerializableExtra("message") as Message
 
-                messages.add(message)
+                if (message.senderId.compareTo(currentUser._id, false) != 0) {
+                    messages.add(message)
 
-                runOnUiThread {
-                    messagesAdapter.notifyItemInserted(messages.size - 1)
-                    layoutManager.scrollToPositionWithOffset(messages.size - 1, 0)
+                    runOnUiThread {
+                        messagesAdapter.notifyItemInserted(messages.size - 1)
+                        layoutManager.scrollToPositionWithOffset(messages.size - 1, 0)
+                    }
                 }
             }
         }, IntentFilter("new-message"))
