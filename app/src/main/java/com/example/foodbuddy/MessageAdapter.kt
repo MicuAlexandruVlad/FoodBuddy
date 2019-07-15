@@ -13,7 +13,8 @@ import android.widget.TextView
 
 class MessageAdapter (private var messages: ArrayList<Message>,
                       private var context: Context,
-                      private var currentUser: User) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                      private var currentUser: User,
+                      private var foundUser: User) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     val dbLinks = DBLinks()
 
@@ -43,6 +44,11 @@ class MessageAdapter (private var messages: ArrayList<Message>,
                 val holder = p0 as SentMessageViewHolder
                 holder.messageText.text = message.messageText
                 holder.timestamp.text = formatTime(message.timestamp)
+                if (message.seen)
+                    holder.seen.visibility = View.VISIBLE
+                else {
+                    holder.seen.visibility = View.GONE
+                }
             }
 
             1 -> {
@@ -61,6 +67,7 @@ class MessageAdapter (private var messages: ArrayList<Message>,
         val messageText: TextView = view.findViewById(R.id.tv_message_text)
         val timestamp: TextView = view.findViewById(R.id.tv_timestamp)
         val body: RelativeLayout = view.findViewById(R.id.rl_message_body)
+        val seen: ImageView = view.findViewById(R.id.iv_seen)
     }
 
     class ReceivedMessageViewHolder (view: View) : RecyclerView.ViewHolder(view) {

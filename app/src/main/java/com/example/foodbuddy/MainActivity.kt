@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val TAG = "MainActivity"
         const val REQ_PROFILE_EDIT = 41
+        const val REQ_CHAT = 555
     }
 
     private lateinit var pager: ViewPager

@@ -80,11 +80,12 @@
             tools:ignore="RtlSymmetry">
 
         <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:id="@+id/iv_seen"
                 android:layout_alignParentStart="true"
-                android:src="@drawable/seen"
+                android:src="@drawable/ic_seen"
+                android:tint="@color/sunsetOrange"
                 android:layout_marginStart="12dp"
                 android:layout_centerVertical="true"
         />

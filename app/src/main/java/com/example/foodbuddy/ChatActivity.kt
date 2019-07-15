@@ -23,6 +23,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import android.util.TypedValue
 import android.view.*
+import com.github.nkzawa.emitter.Emitter
 import org.json.JSONObject
 
 
@@ -44,6 +45,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var conversation: Conversation
 
     private lateinit var toolbar: Toolbar
+    private lateinit var back: ImageView
     private lateinit var toolbarProfileImage: ImageView
     private lateinit var toolbarTitle: TextView
     private lateinit var noMessages: RelativeLayout
@@ -63,6 +65,8 @@ class ChatActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chat)
 
         currentUser = intent.getSerializableExtra("currentUser") as User
+        currentUser.online = true
+        conversation = Conversation()
 
         fromConversationAdapter = intent.getBooleanExtra("fromConversationAdapter", false)
         if (fromConversationAdapter) {
@@ -90,6 +94,21 @@ class ChatActivity : AppCompatActivity() {
         }
 
         socket.connect()
+        /*val json = JSONObject()
+        json.put("userId", currentUser._id)
+        json.put("online", currentUser.online)
+        socket.emit(SocketEvents.STATUS_CHANGE, json)
+
+        Log.d(TAG, SocketEvents.userStatusChange(foundUser._id))
+        socket.on(SocketEvents.userStatusChange(foundUser._id)) { args ->
+            val data = args[0] as Boolean
+            Log.d(TAG, "TEST")
+            Log.d(TAG, "data received -> $data")
+            foundUser.online = data
+            runOnUiThread {
+                messagesAdapter.notifyDataSetChanged()
+            }
+        }*/
 
         layoutManager = LinearLayoutManager(this@ChatActivity, LinearLayout.VERTICAL, false)
 
@@ -119,6 +138,8 @@ class ChatActivity : AppCompatActivity() {
         }
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(messagesRv)
+
+        back.setOnClickListener { finish() }
 
         // detect keyboard open
         body.viewTreeObserver.addOnGlobalLayoutListener {
@@ -169,6 +190,8 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+
+
     private fun broadcastMessageInserted(message: Message) {
         val intent = Intent("inserted-message")
         intent.putExtra("message", message)
@@ -185,6 +208,7 @@ class ChatActivity : AppCompatActivity() {
     private fun broadcastNewConversation(message: Message) {
         val conversation = Conversation()
         conversation.conversationUser = foundUser
+        conversation.conversationId = foundUser._id
         conversation.lastMessage = message
         conversation.profilePhotoId = foundUser.profileImageId
 
@@ -241,7 +265,7 @@ class ChatActivity : AppCompatActivity() {
                         noMessages.visibility = View.GONE
                     else
                         noMessages.visibility = View.VISIBLE
-                    messagesAdapter = MessageAdapter(messages, this@ChatActivity, currentUser)
+                    messagesAdapter = MessageAdapter(messages, this@ChatActivity, currentUser, foundUser)
                     messagesRv.adapter = messagesAdapter
                     messagesRv.layoutManager = layoutManager
                     layoutManager.scrollToPositionWithOffset(messages.size - 1, 0)
@@ -252,6 +276,7 @@ class ChatActivity : AppCompatActivity() {
 
     private fun bindViews() {
         toolbar = findViewById(R.id.tb_chat_toolbar)
+        back = findViewById(R.id.iv_back)
         toolbarProfileImage = findViewById(R.id.iv_toolbar_profile_image)
         toolbarTitle = findViewById(R.id.tv_toolbar_user_name)
         noMessages = findViewById(R.id.rl_first_time)
@@ -319,5 +344,15 @@ class ChatActivity : AppCompatActivity() {
         super.onDestroy()
         canDisplayNotification = true
         broadcastNotificationFlag()
+    }
+
+    private fun emitUserOnline(socket: Socket, online: Boolean, userId: String) {
+        socket.emit("user-$userId-status-changed", online)
+    }
+
+    private fun foundUserStatusChange(online: Boolean) {
+        if (online) {
+            Toast.makeText(this, "User online", Toast.LENGTH_SHORT).show()
+        }
     }
 }

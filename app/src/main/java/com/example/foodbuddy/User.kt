@@ -22,6 +22,7 @@ class User: Serializable {
     var minAge: Int = 0
     var profileSetupComplete: Boolean = false
     var student: Boolean = false
+    var online: Boolean = false
     var college: String = ""
     var profileImageId: String = ""
     var deviceToken: String = ""

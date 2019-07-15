@@ -10,6 +10,7 @@
     <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
             android:id="@+id/rl_message_body"
             android:background="@drawable/sent_message_body"
             android:layout_alignParentEnd="true"
@@ -43,9 +44,22 @@
                 android:layout_marginBottom="12dp"
                 android:layout_marginEnd="12dp"
                 android:layout_marginTop="12dp"
+                android:layout_alignParentStart="true"
+                android:textAlignment="textStart"
                 android:textStyle="bold"
         />
 
     </RelativeLayout>
+    
+    <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:id="@+id/iv_seen"
+            android:src="@drawable/ic_seen"
+            android:tint="@color/sunsetOrange"
+            android:layout_below="@id/rl_message_body"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+    />
 
 </RelativeLayout>

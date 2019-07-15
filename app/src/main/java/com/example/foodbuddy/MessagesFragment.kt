@@ -52,6 +52,7 @@ class MessagesFragment : Fragment() {
 
         receiveNewConversation()
         receiveLastMessage()
+        receiveLastMessageFromService()
 
         if (conversations.size == 0) {
             recyclerView.visibility = View.GONE
@@ -84,9 +85,15 @@ class MessagesFragment : Fragment() {
 
                 conversations.add(conversation)
                 // TODO: Image is not displayed when a new conversation is added
+                Log.d(TAG, "conversation id -> " + conversation.conversationId)
+                Log.d(TAG, "conversation image -> " + conversation.profilePhotoId)
 
                 (getContext() as Activity).runOnUiThread {
                     adapter.notifyItemInserted(conversations.size - 1)
+                    if (noMessages.visibility == View.VISIBLE) {
+                        noMessages.visibility = View.GONE
+                        recyclerView.visibility = View.VISIBLE
+                    }
                 }
             }
         }, IntentFilter("new-conversation"))
@@ -101,13 +108,27 @@ class MessagesFragment : Fragment() {
                 for (index in 0 until conversations.size) {
                     if (conversations[index].conversationId.compareTo(conversationId, false) == 0) {
                         conversations[index].lastMessage = lastMessage
-                        (getContext() as Activity).runOnUiThread {
-                            adapter.notifyItemChanged(index)
-                        }
+                        adapter.notifyItemChanged(index)
                         break
                     }
                 }
             }
         }, IntentFilter("last-message"))
+    }
+
+    private fun receiveLastMessageFromService() {
+        LocalBroadcastManager.getInstance(activity!!.applicationContext).registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val lastMessage = intent.getSerializableExtra("message") as Message
+
+                for (index in 0 until conversations.size) {
+                    if (conversations[index].conversationId.compareTo(lastMessage.senderId, false) == 0) {
+                        conversations[index].lastMessage = lastMessage
+                        adapter.notifyItemChanged(index)
+                        break
+                    }
+                }
+            }
+        }, IntentFilter("new-message"))
     }
 }
