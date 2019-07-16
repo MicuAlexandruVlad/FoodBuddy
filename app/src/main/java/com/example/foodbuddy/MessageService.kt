@@ -14,9 +14,14 @@ import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
+import com.github.nkzawa.socketio.client.IO
+import com.github.nkzawa.socketio.client.Socket
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
+import org.json.JSONObject
+import java.lang.StringBuilder
+import java.net.URISyntaxException
 
 class MessageService: FirebaseMessagingService() {
     companion object {
@@ -28,6 +33,8 @@ class MessageService: FirebaseMessagingService() {
     private lateinit var dbLinks: DBLinks
     private lateinit var lastTextMessage: Message
     private lateinit var conversationIds: ArrayList<String>
+    private lateinit var conversationIdsString: String
+    private lateinit var socket: Socket
     private var canDisplayNotification = false
 
     override fun onCreate() {
@@ -37,9 +44,17 @@ class MessageService: FirebaseMessagingService() {
         dbLinks = DBLinks()
         lastTextMessage = Message()
         conversationIds = ArrayList()
-        getConversationIds(conversationIds)
-        getCurrentUser()
+        conversationIdsString = ""
+
         Log.d(TAG, "Service created")
+
+        try {
+            socket = IO.socket(dbLinks.socketLink)
+        } catch (e: URISyntaxException) {
+            e.printStackTrace()
+        }
+        socket.connect()
+        getConversationIds(conversationIds)
 
         LocalBroadcastManager.getInstance(this).registerReceiver(object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
@@ -53,10 +68,31 @@ class MessageService: FirebaseMessagingService() {
                 lastTextMessage = intent.getSerializableExtra("message") as Message
             }
         }, IntentFilter("inserted-message"))
+
     }
 
-    private fun getCurrentUser() {
+    private fun listenForUserStatusChange(userId: String) {
+        socket.on(SocketEvents.listenForUserStatusChange(userId)) { args ->
+            val data = args[0] as JSONObject
+            Log.d(TAG, "Status changed for this user")
+            Log.d(TAG, "Data -> $data")
 
+            // TODO: update userStatus
+
+            val userStatus = gson.fromJson(data.toString(), UserStatus::class.java) as UserStatus
+            broadcastStatusChange(userStatus)
+            Thread {
+                repository.updateUserStatus(userStatus.userId, userStatus.status, userStatus.statusChangedAt)
+            }
+
+        }
+
+    }
+
+    private fun broadcastStatusChange(userStatus: UserStatus) {
+        val intent = Intent("status-changed")
+        intent.putExtra("user-status", userStatus)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
     override fun onMessageReceived(p0: RemoteMessage?) {
@@ -68,6 +104,13 @@ class MessageService: FirebaseMessagingService() {
             Log.d(TAG, "received message data -> $data")
 
             val message = gson.fromJson(data.toString(), Message::class.java)
+            if (message.senderId !in conversationIds && lastTextMessage.senderId.compareTo(message.senderId, false) != 0) {
+                conversationIds.add(message.senderId)
+                val userStatus = UserStatus()
+                userStatus.userId = message.senderId
+                repository.insertUserStatus(userStatus)
+                listenForUserStatusChange(message.senderId)
+            }
             if (message.type == Message.MESSAGE_TEXT) {
                 message.conversationId = message.senderId
                 // TODO: set the ownerID. But first store current
@@ -126,7 +169,12 @@ class MessageService: FirebaseMessagingService() {
             }
 
             override fun onPostExecute(id: Long?) {
-                Log.d(Repository.TAG, "onPostExecute: distinct conversation ids -> " + ids.size)
+                Log.d(TAG, "onPostExecute: distinct conversation ids -> " + ids.size)
+                if (conversationIds.isNotEmpty()) {
+                    for (index in 0 until conversationIds.size) {
+                        listenForUserStatusChange(conversationIds[index])
+                    }
+                }
             }
         }.execute()
     }
@@ -136,4 +184,11 @@ class MessageService: FirebaseMessagingService() {
         intent.putExtra("message", message)
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        socket.disconnect()
+    }
+
+
 }

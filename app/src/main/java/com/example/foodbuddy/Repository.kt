@@ -30,6 +30,24 @@ class Repository(context: Context) {
         return -1
     }
 
+    @SuppressLint("StaticFieldLeak")
+    fun insertUserStatus(userStatus: UserStatus): Long {
+        object : AsyncTask<Void, Void, Long>() {
+            override fun doInBackground(vararg p0: Void?): Long {
+                Log.d(TAG, "doInBackground: Inserting userStatus")
+                return database.userStatusDAO().insertUserStatus(userStatus)
+            }
+
+            override fun onPostExecute(id: Long?) {
+                super.onPostExecute(id)
+                userStatus.id = id
+                Log.d(TAG, "onPostExecute: Finished inserting userStatus -> $id")
+            }
+
+        }.execute()
+        return -1
+    }
+
     fun getMessagesForConversation(conversationId: String): List<Message> {
         return database.messageDAO().getMessagesForConversation(conversationId)
     }
@@ -44,6 +62,14 @@ class Repository(context: Context) {
 
     fun getAllMessages(): List<Message> {
         return database.messageDAO().getAllMessages()
+    }
+
+    fun getUserStatusForId(userId: String): UserStatus {
+        return database.userStatusDAO().getUserStatusForId(userId)
+    }
+
+    fun updateUserStatus(userId: String, status: Int, changedAt: String) {
+        database.userStatusDAO().updateUserStatus(userId, status, changedAt)
     }
 
     fun deleteMessageById(messageId: Long) {

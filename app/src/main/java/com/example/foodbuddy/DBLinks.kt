@@ -16,6 +16,9 @@ class DBLinks {
     val studentZodiacFilter: String = baseLink + "users/student-zodiac-no-college-filter/"
     val getUserById: String = baseLink + "users/get-user-by-id/"
 
+    val getUserStatusById: String = baseLink + "user-status/status-for-id"
+    val updateUserStatus: String = baseLink + "user-status/update-user-status"
+
 
     fun getImageSmall(userId: String, imageId: String): String {
         return baseLink + "user-images/profile-small/$userId/images/$imageId/"

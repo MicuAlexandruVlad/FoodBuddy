@@ -16,6 +16,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.github.nkzawa.socketio.client.IO
+import com.github.nkzawa.socketio.client.Socket
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
@@ -27,6 +29,9 @@ import cz.msebera.android.httpclient.HttpStatus
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
 import org.json.JSONObject
+import java.net.URISyntaxException
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,6 +54,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var usersInSameArea: ArrayList<User>
     private lateinit var userImages: ArrayList<UserImage>
     private lateinit var conversations: ArrayList<Conversation>
+    private lateinit var socket: Socket
+    private lateinit var dbLinks: DBLinks
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,12 +78,24 @@ class MainActivity : AppCompatActivity() {
         userImages = ArrayList()
         conversations = ArrayList()
 
+        dbLinks = DBLinks()
+        try {
+            socket = IO.socket(dbLinks.socketLink)
+        } catch (e: URISyntaxException) {
+            e.printStackTrace()
+        }
+
+        socket.connect()
+
         currentUser = intent.getSerializableExtra("currentUser") as User
         fromProfileSetup = intent.getBooleanExtra("fromProfileSetup", false)
-        conversations = intent.getSerializableExtra("conversations") as ArrayList<Conversation>
+        // TODO: throws error when coming from profile setup at conversations...the if SHOULD fix it, TEST it
+        if (!fromProfileSetup)
+            conversations = intent.getSerializableExtra("conversations") as ArrayList<Conversation>
 
         Log.d(TAG, "conversations -> " + conversations.size)
 
+        emitUserOnline()
 
         FirebaseMessaging.getInstance().subscribeToTopic(currentUser._id)
         Log.d(TAG, "subscribed to -> " + currentUser._id)
@@ -137,6 +156,33 @@ class MainActivity : AppCompatActivity() {
         val maxAge = currentUser.maxAge
 
         reqUsersInSameArea(currentUserCountry, currentUserCity, preferredGender, minAge, maxAge)
+    }
+
+    private fun emitUserOnline() {
+        val userStatus = UserStatus()
+        val gson = Gson()
+        userStatus.inConversationWith = ""
+        userStatus.userId = currentUser._id
+        userStatus.status = UserStatus.ONLINE
+        userStatus.statusChangedAt = getCurrentTime()
+        val data = JSONObject(gson.toJson(userStatus))
+        socket.emit(SocketEvents.STATUS_CHANGE, data)
+    }
+
+    private fun emitUserOffline() {
+        val userStatus = UserStatus()
+        val gson = Gson()
+        userStatus.inConversationWith = ""
+        userStatus.userId = currentUser._id
+        userStatus.status = UserStatus.OFFLINE
+        userStatus.statusChangedAt = getCurrentTime()
+        val data = JSONObject(gson.toJson(userStatus))
+        socket.emit(SocketEvents.STATUS_CHANGE, data)
+        socket.disconnect()
+    }
+
+    private fun getCurrentTime(): String {
+        return Calendar.getInstance().time.toString()
     }
 
     private fun initAdapter(bundleMessages: Bundle, bundleDiscover: Bundle, bundleEvents: Bundle, user: User) {
@@ -261,5 +307,10 @@ class MainActivity : AppCompatActivity() {
                 currentUser = data.getSerializableExtra("currentUser") as User
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        emitUserOffline()
     }
 }

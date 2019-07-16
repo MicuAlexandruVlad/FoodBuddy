@@ -6,12 +6,13 @@ import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 
 @Database(
-    entities = [Message::class],
+    entities = [Message::class, UserStatus::class],
     exportSchema = false,
     version = 1
 )
 abstract class Database: RoomDatabase() {
     abstract fun messageDAO(): MessageDAO
+    abstract fun userStatusDAO(): UserStatusDAO
 
     companion object {
         @Volatile private var instance: com.example.foodbuddy.Database? = null
@@ -22,7 +23,7 @@ abstract class Database: RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context) = Room.databaseBuilder(context,
-            com.example.foodbuddy.Database::class.java, "test9.db")
+            com.example.foodbuddy.Database::class.java, "test11.db")
             .build()
     }
 }

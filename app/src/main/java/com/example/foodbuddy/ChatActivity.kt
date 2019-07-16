@@ -23,7 +23,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import android.util.TypedValue
 import android.view.*
-import com.github.nkzawa.emitter.Emitter
+import com.google.gson.Gson
 import org.json.JSONObject
 
 
@@ -36,6 +36,7 @@ class ChatActivity : AppCompatActivity() {
 
     private lateinit var currentUser: User
     private lateinit var foundUser: User
+    private var userStatus = UserStatus()
     private lateinit var dbLinks: DBLinks
     private lateinit var messages: ArrayList<Message>
     private lateinit var repository: Repository
@@ -43,9 +44,11 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var socket: Socket
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var conversation: Conversation
+    private lateinit var serverMethods: ServerMethods
 
     private lateinit var toolbar: Toolbar
     private lateinit var back: ImageView
+    private lateinit var isOnline: TextView
     private lateinit var toolbarProfileImage: ImageView
     private lateinit var toolbarTitle: TextView
     private lateinit var noMessages: RelativeLayout
@@ -56,7 +59,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var body: ScrollView
 
     private var isKeyboardOpen = false
-    private var canDisplayNotification = false
+    private var canDisplayNotification = true
     private var fromConversationAdapter = false
 
     @SuppressLint("SetTextI18n")
@@ -67,6 +70,7 @@ class ChatActivity : AppCompatActivity() {
         currentUser = intent.getSerializableExtra("currentUser") as User
         currentUser.online = true
         conversation = Conversation()
+        serverMethods = ServerMethods(this)
 
         fromConversationAdapter = intent.getBooleanExtra("fromConversationAdapter", false)
         if (fromConversationAdapter) {
@@ -94,27 +98,15 @@ class ChatActivity : AppCompatActivity() {
         }
 
         socket.connect()
-        /*val json = JSONObject()
-        json.put("userId", currentUser._id)
-        json.put("online", currentUser.online)
-        socket.emit(SocketEvents.STATUS_CHANGE, json)
-
-        Log.d(TAG, SocketEvents.userStatusChange(foundUser._id))
-        socket.on(SocketEvents.userStatusChange(foundUser._id)) { args ->
-            val data = args[0] as Boolean
-            Log.d(TAG, "TEST")
-            Log.d(TAG, "data received -> $data")
-            foundUser.online = data
-            runOnUiThread {
-                messagesAdapter.notifyDataSetChanged()
-            }
-        }*/
+        emitUserInConversation(currentUser, foundUser)
 
         layoutManager = LinearLayoutManager(this@ChatActivity, LinearLayout.VERTICAL, false)
 
         reqMessages()
+        reqFoundUserStatus()
 
         receiveMessage()
+        receiveUserStatusChange()
 
         toolbar.title = ""
         toolbarTitle.text = foundUser.firstName + " " + foundUser.lastName
@@ -190,6 +182,32 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
+    private fun reqFoundUserStatus() {
+        object : AsyncTask<Void, Void, Int>() {
+            override fun doInBackground(vararg p0: Void?): Int? {
+                userStatus = repository.getUserStatusForId(foundUser._id)
+                if (userStatus == null)
+                    Log.d(TAG, "User status is null")
+                return 0
+            }
+
+            @SuppressLint("SetTextI18n")
+            override fun onPostExecute(result: Int?) {
+                super.onPostExecute(result)
+                runOnUiThread {
+                    if (userStatus != null) {
+                        if (userStatus.status in arrayOf(1, 2)) {
+                            isOnline.text = "online"
+                        }
+                        else {
+                            isOnline.text = "offline"
+                        }
+                    }
+                }
+            }
+        }.execute()
+    }
 
 
     private fun broadcastMessageInserted(message: Message) {
@@ -232,6 +250,28 @@ class ChatActivity : AppCompatActivity() {
                 }
             }
         }, IntentFilter("new-message"))
+    }
+
+    private fun receiveUserStatusChange() {
+        LocalBroadcastManager.getInstance(this).registerReceiver(object : BroadcastReceiver() {
+            @SuppressLint("SetTextI18n")
+            override fun onReceive(context: Context, intent: Intent) {
+                val userStatus = intent.getSerializableExtra("user-status") as UserStatus
+
+
+                if (userStatus.userId.compareTo(foundUser._id, false) == 0) {
+                    runOnUiThread {
+                        val status = userStatus.status
+                        if (status in arrayOf(1, 2)) {
+                            isOnline.text = "online"
+                        }
+                        else {
+                            isOnline.text = "offline"
+                        }
+                    }
+                }
+            }
+        }, IntentFilter("status-changed"))
     }
 
     private fun messageToJson(message: Message, obj: JSONObject) {
@@ -277,6 +317,7 @@ class ChatActivity : AppCompatActivity() {
     private fun bindViews() {
         toolbar = findViewById(R.id.tb_chat_toolbar)
         back = findViewById(R.id.iv_back)
+        isOnline = findViewById(R.id.tv_is_online)
         toolbarProfileImage = findViewById(R.id.iv_toolbar_profile_image)
         toolbarTitle = findViewById(R.id.tv_toolbar_user_name)
         noMessages = findViewById(R.id.rl_first_time)
@@ -344,15 +385,32 @@ class ChatActivity : AppCompatActivity() {
         super.onDestroy()
         canDisplayNotification = true
         broadcastNotificationFlag()
+        emitUserOutOfConversation(currentUser)
+        socket.disconnect()
     }
 
-    private fun emitUserOnline(socket: Socket, online: Boolean, userId: String) {
-        socket.emit("user-$userId-status-changed", online)
+    private fun emitUserInConversation(currentUser: User, foundUser: User) {
+        val userStatus = UserStatus()
+        val gson = Gson()
+        userStatus.inConversationWith = foundUser._id
+        userStatus.userId = currentUser._id
+        userStatus.status = UserStatus.IN_CONVERSATION
+        userStatus.statusChangedAt = getCurrentTime()
+        val data = JSONObject(gson.toJson(userStatus))
+        socket.emit(SocketEvents.STATUS_CHANGE, data)
     }
 
-    private fun foundUserStatusChange(online: Boolean) {
-        if (online) {
-            Toast.makeText(this, "User online", Toast.LENGTH_SHORT).show()
-        }
+    private fun emitUserOutOfConversation(currentUser: User) {
+        val userStatus = UserStatus()
+        val gson = Gson()
+        userStatus.inConversationWith = ""
+        userStatus.userId = currentUser._id
+        userStatus.status = UserStatus.ONLINE
+        userStatus.statusChangedAt = getCurrentTime()
+        val data = JSONObject(gson.toJson(userStatus))
+        socket.emit(SocketEvents.STATUS_CHANGE, data)
     }
+
+
+
 }
