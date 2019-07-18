@@ -187,21 +187,19 @@ class ChatActivity : AppCompatActivity() {
         object : AsyncTask<Void, Void, Int>() {
             override fun doInBackground(vararg p0: Void?): Int? {
                 userStatus = repository.getUserStatusForId(foundUser._id)
-                if (userStatus == null)
-                    Log.d(TAG, "User status is null")
                 return 0
             }
 
             @SuppressLint("SetTextI18n")
             override fun onPostExecute(result: Int?) {
                 super.onPostExecute(result)
-                runOnUiThread {
-                    if (userStatus != null) {
-                        if (userStatus.status in arrayOf(1, 2)) {
-                            isOnline.text = "online"
-                        }
-                        else {
-                            isOnline.text = "offline"
+                if (userStatus != null) {
+                    val status = userStatus.status
+                    runOnUiThread {
+                        isOnline.visibility = View.VISIBLE
+                        when (status) {
+                            0 -> isOnline.text = "offline"
+                            1, 2 -> isOnline.text = "online"
                         }
                     }
                 }
@@ -241,11 +239,17 @@ class ChatActivity : AppCompatActivity() {
                 val message = intent.getSerializableExtra("message") as Message
 
                 if (message.senderId.compareTo(currentUser._id, false) != 0) {
-                    messages.add(message)
+                    if (message.senderId.compareTo(foundUser._id, false) == 0) {
+                        runOnUiThread {
+                            if (messages.size == 0) {
+                                noMessages.visibility = View.GONE
+                                messagesRv.visibility = View.VISIBLE
+                            }
+                            messages.add(message)
 
-                    runOnUiThread {
-                        messagesAdapter.notifyItemInserted(messages.size - 1)
-                        layoutManager.scrollToPositionWithOffset(messages.size - 1, 0)
+                            messagesAdapter.notifyItemInserted(messages.size - 1)
+                            layoutManager.scrollToPositionWithOffset(messages.size - 1, 0)
+                        }
                     }
                 }
             }

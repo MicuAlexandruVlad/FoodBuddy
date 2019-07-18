@@ -63,6 +63,15 @@ class MessagesFragment : Fragment() {
             noMessages.visibility = View.GONE
         }
 
+        // TODO: this should not happen...but it does...
+        //  every time i start a conversation with someone, a conversation with the myself is always saved
+        for (index in 0 until conversations.size)
+            if (conversations[index].conversationId.compareTo(currentUser._id, false) == 0) {
+                conversations.removeAt(index)
+                break
+            }
+
+
         adapter = ConversationAdapter(conversations, context, currentUser)
         layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
         recyclerView.adapter = adapter
@@ -88,7 +97,7 @@ class MessagesFragment : Fragment() {
                 Log.d(TAG, "conversation id -> " + conversation.conversationId)
                 Log.d(TAG, "conversation image -> " + conversation.profilePhotoId)
 
-                (getContext() as Activity).runOnUiThread {
+                activity!!.runOnUiThread {
                     adapter.notifyItemInserted(conversations.size - 1)
                     if (noMessages.visibility == View.VISIBLE) {
                         noMessages.visibility = View.GONE

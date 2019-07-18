@@ -12,6 +12,9 @@ interface UserStatusDAO {
     @Query("SELECT * FROM UserStatus WHERE userId = :userId")
     fun getUserStatusForId(userId: String): UserStatus
 
+    @Query("SELECT * FROM UserStatus")
+    fun getAllUserStatus(): List<UserStatus>
+
     @Query("""UPDATE UserStatus 
         SET status = :status, statusChangedAt = :changedAt 
         WHERE userId = :userId""")

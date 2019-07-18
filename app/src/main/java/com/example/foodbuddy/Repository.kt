@@ -64,6 +64,10 @@ class Repository(context: Context) {
         return database.messageDAO().getAllMessages()
     }
 
+    fun getAllUserStatus(): List<UserStatus> {
+        return database.userStatusDAO().getAllUserStatus()
+    }
+
     fun getUserStatusForId(userId: String): UserStatus {
         return database.userStatusDAO().getUserStatusForId(userId)
     }

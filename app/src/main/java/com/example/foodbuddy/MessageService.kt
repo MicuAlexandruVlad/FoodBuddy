@@ -72,6 +72,7 @@ class MessageService: FirebaseMessagingService() {
     }
 
     private fun listenForUserStatusChange(userId: String) {
+        Log.d(TAG, "Starting to listen for status change for user with id -> $userId")
         socket.on(SocketEvents.listenForUserStatusChange(userId)) { args ->
             val data = args[0] as JSONObject
             Log.d(TAG, "Status changed for this user")
@@ -83,7 +84,7 @@ class MessageService: FirebaseMessagingService() {
             broadcastStatusChange(userStatus)
             Thread {
                 repository.updateUserStatus(userStatus.userId, userStatus.status, userStatus.statusChangedAt)
-            }
+            }.start()
 
         }
 
@@ -106,17 +107,31 @@ class MessageService: FirebaseMessagingService() {
             val message = gson.fromJson(data.toString(), Message::class.java)
             if (message.senderId !in conversationIds && lastTextMessage.senderId.compareTo(message.senderId, false) != 0) {
                 conversationIds.add(message.senderId)
+                Log.d(TAG, "Conversations updated -> " + conversationIds.size)
                 val userStatus = UserStatus()
                 userStatus.userId = message.senderId
                 repository.insertUserStatus(userStatus)
                 listenForUserStatusChange(message.senderId)
+                Log.d(TAG, "line 115: New conversation with -> " + message.senderId)
+
+                //TODO: Broadcast new conversation... a new user is trying to contact me
+            }
+            if (lastTextMessage.senderId.compareTo(message.senderId, false) == 0) {
+               if (message.conversationId !in conversationIds) {
+                   conversationIds.add(message.conversationId)
+                   val userStatus = UserStatus()
+                   userStatus.userId = message.conversationId
+                   repository.insertUserStatus(userStatus)
+                   listenForUserStatusChange(message.conversationId)
+                   Log.d(TAG, "line 126: New conversation with -> " + message.conversationId)
+               }
             }
             if (message.type == Message.MESSAGE_TEXT) {
-                message.conversationId = message.senderId
                 // TODO: set the ownerID. But first store current
                 //  user id...or maybe all the data in Room
                 if (lastTextMessage.senderId.compareTo(message.senderId, false) != 0) {
                     // message is not sent by the current user
+                    message.conversationId = message.senderId
                     repository.insertMessage(message)
                     broadcastMessage(message)
                     if (canDisplayNotification)
