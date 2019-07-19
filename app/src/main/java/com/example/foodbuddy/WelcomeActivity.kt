@@ -347,4 +347,11 @@ class WelcomeActivity : AppCompatActivity() {
             }
         })
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        conversations.clear()
+        getConversationsIds()
+    }
 }

@@ -230,6 +230,7 @@ class ChatActivity : AppCompatActivity() {
 
         val intent = Intent("new-conversation")
         intent.putExtra("conversation", conversation)
+        intent.putExtra("from_service", false)
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 

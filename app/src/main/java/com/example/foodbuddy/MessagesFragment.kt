@@ -19,7 +19,14 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
+import com.google.gson.Gson
+import com.loopj.android.http.AsyncHttpClient
+import com.loopj.android.http.JsonHttpResponseHandler
+import com.loopj.android.http.RequestParams
+import cz.msebera.android.httpclient.Header
+import cz.msebera.android.httpclient.HttpStatus
 import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONObject
 
 class MessagesFragment : Fragment() {
 
@@ -43,6 +50,14 @@ class MessagesFragment : Fragment() {
         currentUser = bundle.getSerializable("currentUser") as User
         conversations = bundle.getSerializable("conversations") as ArrayList<Conversation>
         Log.d(TAG, "items -> " + conversations.size)
+
+        val gson = Gson()
+
+        Log.d(TAG, "conversations -> " + gson.toJson(conversations))
+
+        // TODO: duplicate conversation is added when a person is contacting me
+        // also the data for that user is empty, only the message data is stored
+        // kinda solved -> it is from onResume in WelcomeActivity
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -89,23 +104,104 @@ class MessagesFragment : Fragment() {
     private fun receiveNewConversation() {
         LocalBroadcastManager.getInstance(activity!!.applicationContext).registerReceiver(object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                val conversation = intent.getSerializableExtra("conversation") as Conversation
-                Log.d(TAG, "new conversation with -> " + conversation.conversationUser.firstName)
+                val fromService = intent.getBooleanExtra("from_service", false)
 
-                conversations.add(conversation)
-                // TODO: Image is not displayed when a new conversation is added
-                Log.d(TAG, "conversation id -> " + conversation.conversationId)
-                Log.d(TAG, "conversation image -> " + conversation.profilePhotoId)
+                if (!fromService) {
+                    val conversation = intent.getSerializableExtra("conversation") as Conversation
+                    Log.d(TAG, "Conversation not from service")
+                    Log.d(TAG, "new conversation with -> " + conversation.conversationUser.firstName)
 
-                activity!!.runOnUiThread {
-                    adapter.notifyItemInserted(conversations.size - 1)
-                    if (noMessages.visibility == View.VISIBLE) {
-                        noMessages.visibility = View.GONE
-                        recyclerView.visibility = View.VISIBLE
+                    conversations.add(conversation)
+                    // TODO: Image is not displayed when a new conversation is added
+                    Log.d(TAG, "conversation id -> " + conversation.conversationId)
+                    Log.d(TAG, "conversation image -> " + conversation.profilePhotoId)
+
+                    activity!!.runOnUiThread {
+                        adapter.notifyItemInserted(conversations.size - 1)
+                        if (noMessages.visibility == View.VISIBLE) {
+                            noMessages.visibility = View.GONE
+                            recyclerView.visibility = View.VISIBLE
+                        }
                     }
+                }
+                else {
+                    val conversation = intent.getSerializableExtra("conversation") as Conversation
+
+                    Log.d(TAG, "Conversation from service")
+                    resolveConversation(conversation)
                 }
             }
         }, IntentFilter("new-conversation"))
+    }
+
+    private fun resolveConversation(conversation: Conversation) {
+        val lastMessage = conversation.lastMessage
+        val conversationUserId = lastMessage.senderId
+
+        val client = AsyncHttpClient()
+        val params = RequestParams()
+        val dbLinks = DBLinks()
+
+        params.put("ids", conversationUserId)
+
+        client.get(dbLinks.getUserById, params, object : JsonHttpResponseHandler() {
+            override fun onSuccess(statusCode: Int, headers: Array<out Header>?, response: JSONObject?) {
+                super.onSuccess(statusCode, headers, response)
+
+                val status = response!!.getInt("status")
+
+                if (status == HttpStatus.SC_OK) {
+                    val userData = response.getJSONArray("users").getJSONObject(0)
+                    val conversationUser = User()
+                    conversationUser._id = userData.getString("_id")
+                    conversationUser.firstName = userData.getString("firstName")
+                    conversationUser.lastName = userData.getString("lastName")
+                    conversationUser.bio = userData.getString("bio")
+                    conversationUser.gender = userData.getString("gender")
+                    conversationUser.age = userData.getInt("age")
+                    conversationUser.city = userData.getString("city")
+                    conversationUser.country = userData.getString("country")
+                    conversationUser.eatTimePeriods = userData.getString("eatTimePeriods")
+                    conversationUser.eatTimes = userData.getInt("eatTimes")
+                    conversationUser.birthDate = userData.getString("birthDate")
+                    conversationUser.genderToMeet = userData.getString("genderToMeet")
+                    conversationUser.maxAge = userData.getInt("maxAge")
+                    conversationUser.minAge = userData.getInt("minAge")
+                    conversationUser.profileSetupComplete = userData.getBoolean("profileSetupComplete")
+                    conversationUser.student = userData.getBoolean("student")
+                    conversationUser.zodiac = userData.getString("zodiac")
+                    conversationUser.college = userData.getString("college")
+
+                    conversation.conversationUser = conversationUser
+
+
+                    client.get(dbLinks.smallProfileImagesById, params, object : JsonHttpResponseHandler() {
+                        override fun onSuccess(statusCode: Int, headers: Array<out Header>?, response: JSONObject?) {
+                            super.onSuccess(statusCode, headers, response)
+
+                            val imageStatus = response!!.getInt("status")
+
+                            if (imageStatus == HttpStatus.SC_OK) {
+                                val imageData = response.getJSONArray("userImages").getJSONObject(0)
+
+                                conversation.profilePhotoId = imageData.getString("_id")
+
+                                Log.d(TAG, "conversation image -> " + conversation.profilePhotoId)
+
+                                activity!!.runOnUiThread {
+                                    conversations.add(conversation)
+                                    if (noMessages.visibility == View.VISIBLE) {
+                                        noMessages.visibility = View.GONE
+                                        recyclerView.visibility = View.VISIBLE
+                                    }
+                                    adapter.notifyItemInserted(conversations.size - 1)
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+        })
     }
 
     private fun receiveLastMessage() {

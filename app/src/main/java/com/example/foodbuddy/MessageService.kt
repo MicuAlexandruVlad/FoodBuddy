@@ -115,6 +115,7 @@ class MessageService: FirebaseMessagingService() {
                 Log.d(TAG, "line 115: New conversation with -> " + message.senderId)
 
                 //TODO: Broadcast new conversation... a new user is trying to contact me
+                broadcastNewConversation(message)
             }
             if (lastTextMessage.senderId.compareTo(message.senderId, false) == 0) {
                if (message.conversationId !in conversationIds) {
@@ -139,6 +140,16 @@ class MessageService: FirebaseMessagingService() {
                 }
             }
         }
+    }
+
+    private fun broadcastNewConversation(message: Message) {
+        val conversation = Conversation()
+        conversation.lastMessage = message
+
+        val intent = Intent("new-conversation")
+        intent.putExtra("conversation", conversation)
+        intent.putExtra("from_service", true)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
     private fun sendNotification(messageBody: String, sender: String) {
