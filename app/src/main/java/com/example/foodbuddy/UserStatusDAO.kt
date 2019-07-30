@@ -16,7 +16,7 @@ interface UserStatusDAO {
     fun getAllUserStatus(): List<UserStatus>
 
     @Query("""UPDATE UserStatus 
-        SET status = :status, statusChangedAt = :changedAt 
+        SET status = :status, statusChangedAt = :changedAt, inConversationWith = :inConversationWith 
         WHERE userId = :userId""")
-    fun updateUserStatus(userId: String, status: Int, changedAt: String)
+    fun updateUserStatus(userId: String, status: Int, changedAt: String, inConversationWith: String)
 }

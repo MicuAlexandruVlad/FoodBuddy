@@ -26,4 +26,14 @@ interface MessageDAO {
 
     @Query("DELETE from Message WHERE id = :messageId")
     fun deleteMessageById(messageId: Long)
+
+    @Query("SELECT * FROM Message WHERE read = :read")
+    fun getUnreadMessagesAll(read: Boolean): List<Message>
+
+    @Query("SELECT * FROM Message WHERE read = :read AND conversationId = :conversationId AND senderId = :conversationId")
+    fun getUnreadMessagesForConversation(read: Boolean, conversationId: String): List<Message>
+
+    @Query("""UPDATE Message SET read = :read, readAt = :readAt 
+        WHERE conversationId = :conversationId AND read != :read AND senderId != :conversationId""")
+    fun updateUnreadMessagesInConversation(read: Boolean, readAt: String, conversationId: String)
 }

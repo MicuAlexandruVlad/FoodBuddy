@@ -26,6 +26,7 @@
           tools:ignore="HardcodedText"
           app:showAsAction="ifRoom"
           android:icon="@drawable/ic_calendar"
+          android:iconTint="@color/white"
     />
     
 </menu>

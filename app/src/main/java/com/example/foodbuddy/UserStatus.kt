@@ -22,7 +22,5 @@ class UserStatus: Serializable {
     // 2 - in a conversation
     var status: Int = -1
     var statusChangedAt: String = ""
-
-    @Ignore
     var inConversationWith: String = ""
 }

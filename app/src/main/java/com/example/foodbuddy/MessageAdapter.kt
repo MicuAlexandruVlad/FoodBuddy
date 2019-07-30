@@ -44,10 +44,10 @@ class MessageAdapter (private var messages: ArrayList<Message>,
                 val holder = p0 as SentMessageViewHolder
                 holder.messageText.text = message.messageText
                 holder.timestamp.text = formatTime(message.timestamp)
-                if (message.seen)
+                if (message.read)
                     holder.seen.visibility = View.VISIBLE
                 else {
-                    holder.seen.visibility = View.GONE
+                    holder.seen.visibility = View.INVISIBLE
                 }
             }
 

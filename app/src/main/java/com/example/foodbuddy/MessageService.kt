@@ -14,6 +14,7 @@ import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
+import android.view.View
 import com.github.nkzawa.socketio.client.IO
 import com.github.nkzawa.socketio.client.Socket
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -22,6 +23,8 @@ import com.google.gson.Gson
 import org.json.JSONObject
 import java.lang.StringBuilder
 import java.net.URISyntaxException
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MessageService: FirebaseMessagingService() {
     companion object {
@@ -35,7 +38,9 @@ class MessageService: FirebaseMessagingService() {
     private lateinit var conversationIds: ArrayList<String>
     private lateinit var conversationIdsString: String
     private lateinit var socket: Socket
+    private var currentUser = User()
     private var canDisplayNotification = false
+    private var userRetrieved = false
 
     override fun onCreate() {
         super.onCreate()
@@ -44,6 +49,7 @@ class MessageService: FirebaseMessagingService() {
         dbLinks = DBLinks()
         lastTextMessage = Message()
         conversationIds = ArrayList()
+        currentUser = User()
         conversationIdsString = ""
 
         Log.d(TAG, "Service created")
@@ -69,31 +75,34 @@ class MessageService: FirebaseMessagingService() {
             }
         }, IntentFilter("inserted-message"))
 
-    }
-
-    private fun listenForUserStatusChange(userId: String) {
-        Log.d(TAG, "Starting to listen for status change for user with id -> $userId")
-        socket.on(SocketEvents.listenForUserStatusChange(userId)) { args ->
-            val data = args[0] as JSONObject
-            Log.d(TAG, "Status changed for this user")
-            Log.d(TAG, "Data -> $data")
-
-            // TODO: update userStatus
-
-            val userStatus = gson.fromJson(data.toString(), UserStatus::class.java) as UserStatus
-            broadcastStatusChange(userStatus)
-            Thread {
-                repository.updateUserStatus(userStatus.userId, userStatus.status, userStatus.statusChangedAt)
-            }.start()
-
-        }
+        /*LocalBroadcastManager.getInstance(this).registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                Log.d(TAG, "Current user received")
+                currentUser = intent.getSerializableExtra("currentUser") as User
+                listenForEventRequest(currentUser._id)
+            }
+        }, IntentFilter("current-user"))*/
 
     }
 
-    private fun broadcastStatusChange(userStatus: UserStatus) {
-        val intent = Intent("status-changed")
-        intent.putExtra("user-status", userStatus)
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+    @SuppressLint("StaticFieldLeak")
+    private fun reqCurrentUser(id: String) {
+        object : AsyncTask<Void, Void, Int>() {
+            override fun doInBackground(vararg p0: Void?): Int? {
+                Log.d(TAG, "id -> $id")
+                val gson = Gson()
+                currentUser = repository.getUserForServerId(id)
+                Log.d(TAG, "User from local db -> " + gson.toJson(currentUser))
+                return 0
+            }
+
+            override fun onPostExecute(result: Int?) {
+                super.onPostExecute(result)
+                userRetrieved = true
+                listenForEventRequest(currentUser._id)
+                listenForEventRequestCancel(currentUser._id)
+            }
+        }.execute()
     }
 
     override fun onMessageReceived(p0: RemoteMessage?) {
@@ -105,31 +114,49 @@ class MessageService: FirebaseMessagingService() {
             Log.d(TAG, "received message data -> $data")
 
             val message = gson.fromJson(data.toString(), Message::class.java)
-            if (message.senderId !in conversationIds && lastTextMessage.senderId.compareTo(message.senderId, false) != 0) {
-                conversationIds.add(message.senderId)
-                Log.d(TAG, "Conversations updated -> " + conversationIds.size)
-                val userStatus = UserStatus()
-                userStatus.userId = message.senderId
-                repository.insertUserStatus(userStatus)
-                listenForUserStatusChange(message.senderId)
-                Log.d(TAG, "line 115: New conversation with -> " + message.senderId)
 
-                //TODO: Broadcast new conversation... a new user is trying to contact me
-                broadcastNewConversation(message)
+            if (message.type == Message.MESSAGE_DUMMY) {
+                if (!userRetrieved) {
+                    Log.d(TAG, "Called from line 121")
+                    reqCurrentUser(message.senderId)
+                }
             }
-            if (lastTextMessage.senderId.compareTo(message.senderId, false) == 0) {
-               if (message.conversationId !in conversationIds) {
-                   conversationIds.add(message.conversationId)
-                   val userStatus = UserStatus()
-                   userStatus.userId = message.conversationId
-                   repository.insertUserStatus(userStatus)
-                   listenForUserStatusChange(message.conversationId)
-                   Log.d(TAG, "line 126: New conversation with -> " + message.conversationId)
-               }
-            }
+
             if (message.type == Message.MESSAGE_TEXT) {
-                // TODO: set the ownerID. But first store current
-                //  user id...or maybe all the data in Room
+                if (lastTextMessage.senderId.compareTo(message.senderId, false) != 0) {
+                    if (!userRetrieved) {
+                        Log.d(TAG, "Called from line 129")
+                        reqCurrentUser(message.conversationId)
+                    }
+                    if (message.senderId !in conversationIds) {
+                        // A new user is contacting me
+
+                        conversationIds.add(message.senderId)
+                        Log.d(TAG, "Conversations updated -> " + conversationIds.size)
+                        val userStatus = UserStatus()
+                        userStatus.userId = message.senderId
+                        repository.insertUserStatus(userStatus)
+                        listenForUserStatusChange(message.senderId)
+                        Log.d(TAG, "line 140: New conversation with -> " + message.senderId)
+
+                        broadcastNewConversation(message)
+                    }
+                }
+                if (lastTextMessage.senderId.compareTo(message.senderId, false) == 0) {
+                    if (!userRetrieved) {
+                        Log.d(TAG, "Called from line 137")
+                        reqCurrentUser(message.senderId)
+                    }
+                    if (message.conversationId !in conversationIds) {
+                        conversationIds.add(message.conversationId)
+                        val userStatus = UserStatus()
+                        userStatus.userId = message.conversationId
+                        repository.insertUserStatus(userStatus)
+                        listenForUserStatusChange(message.conversationId)
+                        Log.d(TAG, "line 156: New conversation with -> " + message.conversationId)
+                    }
+                }
+
                 if (lastTextMessage.senderId.compareTo(message.senderId, false) != 0) {
                     // message is not sent by the current user
                     message.conversationId = message.senderId
@@ -142,6 +169,59 @@ class MessageService: FirebaseMessagingService() {
         }
     }
 
+    private fun listenForEventRequest(userId: String) {
+        Log.d(TAG, "listenForEventRequest: called, id -> $userId")
+        socket.on(SocketEvents.permissionRequired(userId)) { args ->
+            val data = args[0] as JSONObject
+            broadcastEventRequest(JSONUtils.jsonObjToEventRequest(data))
+        }
+    }
+
+    private fun listenForEventRequestCancel(userId: String) {
+        Log.d(TAG, "listenForEventRequestCancel: called, id -> $userId")
+        socket.on(SocketEvents.requestCancel(userId)) { args ->
+            val data = args[0] as JSONObject
+            broadcastEventRequest(JSONUtils.jsonObjToEventRequest(data))
+        }
+    }
+
+    private fun listenForUserStatusChange(userId: String) {
+        Log.d(TAG, "Starting to listen for status change for user with id -> $userId")
+        socket.on(SocketEvents.listenForUserStatusChange(userId)) { args ->
+            val data = args[0] as JSONObject
+            Log.d(TAG, "Status changed for this user")
+            Log.d(TAG, "Data -> $data")
+
+            val userStatus = gson.fromJson(data.toString(), UserStatus::class.java) as UserStatus
+            userStatus.inConversationWith = data.getString("inConversationWith")
+            Log.d(TAG, "In conversation with -> " + userStatus.inConversationWith)
+            broadcastStatusChange(userStatus)
+            Thread {
+                repository.updateUserStatus(userStatus.userId, userStatus.status, userStatus.statusChangedAt, userStatus.inConversationWith)
+                if (userStatus.status == UserStatus.IN_CONVERSATION) {
+                    val readAt = getCurrentTime()
+                    if (userStatus.inConversationWith.compareTo(currentUser._id, false) == 0) {
+                        Log.d(TAG, "Updating messages for conversation with id -> $userId")
+                        repository.updateUnreadMessagesInConversation(true, readAt, userId)
+                    }
+                }
+            }.start()
+        }
+
+    }
+
+    private fun broadcastStatusChange(userStatus: UserStatus) {
+        val intent = Intent("status-changed")
+        intent.putExtra("user-status", userStatus)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+    }
+
+    private fun broadcastEventRequest(eventRequest: EventRequest) {
+        val intent = Intent("event-request")
+        intent.putExtra("event-request", eventRequest)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+    }
+
     private fun broadcastNewConversation(message: Message) {
         val conversation = Conversation()
         conversation.lastMessage = message
@@ -150,6 +230,16 @@ class MessageService: FirebaseMessagingService() {
         intent.putExtra("conversation", conversation)
         intent.putExtra("from_service", true)
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+    }
+
+    private fun broadcastMessage(message: Message) {
+        val intent = Intent("new-message")
+        intent.putExtra("message", message)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+    }
+
+    private fun getCurrentTime() : String {
+        return Calendar.getInstance().time.toString()
     }
 
     private fun sendNotification(messageBody: String, sender: String) {
@@ -203,12 +293,6 @@ class MessageService: FirebaseMessagingService() {
                 }
             }
         }.execute()
-    }
-
-    private fun broadcastMessage(message: Message) {
-        val intent = Intent("new-message")
-        intent.putExtra("message", message)
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
     override fun onDestroy() {

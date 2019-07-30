@@ -1,8 +1,15 @@
 package com.example.foodbuddy
 
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Ignore
+import android.arch.persistence.room.PrimaryKey
 import java.io.Serializable
 
+@Entity(tableName = "User")
 class User: Serializable {
+    @PrimaryKey(autoGenerate = true)
+    var localDbId: Long? = null
+
     var _id: String = ""
     var zodiac: String = ""
     var email: String = ""
@@ -26,6 +33,8 @@ class User: Serializable {
     var college: String = ""
     var profileImageId: String = ""
     var deviceToken: String = ""
+
+    @Ignore
     var galleryImageIds = ArrayList<String>()
 
 }

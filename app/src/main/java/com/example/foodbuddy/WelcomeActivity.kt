@@ -132,6 +132,8 @@ class WelcomeActivity : AppCompatActivity() {
                             currentUser.zodiac = userData.getString("zodiac")
                             currentUser.college = userData.getString("college")
 
+                            deleteUserAndInsert(currentUser)
+
                             runOnUiThread {
                                 load.cancelAnimation()
                                 load.visibility = View.INVISIBLE
@@ -180,6 +182,22 @@ class WelcomeActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
+    private fun deleteUserAndInsert(user: User) {
+        object : AsyncTask<Void, Void, Int>() {
+            override fun doInBackground(vararg p0: Void?): Int? {
+                repository.deleteUserById(user._id)
+                return 0
+            }
+
+            override fun onPostExecute(result: Int?) {
+                super.onPostExecute(result)
+                repository.insertUser(user)
+                Log.d(TAG, "Inserting user with id -> " + user._id)
+            }
+        }.execute()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -194,6 +212,8 @@ class WelcomeActivity : AppCompatActivity() {
 
                 email.setText(emailVal)
                 password.setText(passwordVal)
+
+                repository.insertUser(currentUser)
             }
         }
     }
@@ -203,22 +223,22 @@ class WelcomeActivity : AppCompatActivity() {
         object : AsyncTask<Void, Void, Int>() {
             override fun doInBackground(vararg p0: Void?): Int? {
                 val ids = repository.getConversationIds()
-                for (index in 0 until ids.size) {
-                    val id = ids[index]
+                val set = HashSet<String>()
+                set.addAll(ids)
+                set.forEach { id ->
                     val conversation = Conversation()
                     conversation.conversationId = id
                     Log.d(TAG, "doInBackground: conversation id -> $id")
 
                     conversations.add(conversation)
                 }
-
                 return 0
             }
 
             override fun onPostExecute(result: Int?) {
                 super.onPostExecute(result)
                 for (index in 0 until conversations.size) {
-                    var conversation = conversations[index]
+                    val conversation = conversations[index]
                     Log.d(TAG, "doInBackground: conversation id -> " + conversation.conversationId)
                     getLastMessageFromConversation(conversation)
                 }
@@ -331,7 +351,10 @@ class WelcomeActivity : AppCompatActivity() {
                                 user.student = obj.getBoolean("student")
                                 user.zodiac = obj.getString("zodiac")
                                 user.college = obj.getString("college")
-                                conversation.conversationUser = user
+                                if (user.firstName.compareTo("") == 0)
+                                    conversations.removeAt(i)
+                                else
+                                    conversation.conversationUser = user
                                 break
                             }
                         }

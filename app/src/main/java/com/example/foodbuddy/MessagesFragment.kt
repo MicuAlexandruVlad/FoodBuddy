@@ -1,10 +1,12 @@
 package com.example.foodbuddy
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.LocalBroadcastManager
@@ -38,6 +40,7 @@ class MessagesFragment : Fragment() {
     private lateinit var currentUser: User
     private lateinit var conversations: ArrayList<Conversation>
     private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var repository: Repository
 
     private lateinit var parentPager: ViewPager
     private lateinit var adapter: ConversationAdapter
@@ -52,6 +55,7 @@ class MessagesFragment : Fragment() {
         Log.d(TAG, "items -> " + conversations.size)
 
         val gson = Gson()
+        repository = Repository(context!!)
 
         Log.d(TAG, "conversations -> " + gson.toJson(conversations))
 
@@ -68,6 +72,8 @@ class MessagesFragment : Fragment() {
         receiveNewConversation()
         receiveLastMessage()
         receiveLastMessageFromService()
+        receiveUserStatusChange()
+
 
         if (conversations.size == 0) {
             recyclerView.visibility = View.GONE
@@ -92,7 +98,31 @@ class MessagesFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = layoutManager
 
+        reqNumUnreadMessages()
+
         return view
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private fun reqNumUnreadMessages() {
+        for (index in 0 until conversations.size) {
+            val conversation = conversations[index]
+            object : AsyncTask<Void, Void, Int>() {
+                override fun doInBackground(vararg p0: Void?): Int {
+                    return repository.getUnreadMessagesForConversation(false, conversation.conversationId).size
+                }
+
+                override fun onPostExecute(unreadMessages: Int?) {
+                    super.onPostExecute(unreadMessages)
+                    Log.d(TAG, "Unread messages for conversation with user " + conversation.conversationUser.lastName +
+                            " -> $unreadMessages")
+
+                    conversation.unreadMessages = unreadMessages as Int
+                    adapter.notifyDataSetChanged()
+
+                }
+            }.execute()
+        }
     }
 
     private fun bindViews(view: View) {
@@ -173,6 +203,7 @@ class MessagesFragment : Fragment() {
                     conversationUser.college = userData.getString("college")
 
                     conversation.conversationUser = conversationUser
+                    Log.d(TAG, "Contacted by user with id -> " + conversationUser._id)
 
 
                     client.get(dbLinks.smallProfileImagesById, params, object : JsonHttpResponseHandler() {
@@ -189,6 +220,7 @@ class MessagesFragment : Fragment() {
                                 Log.d(TAG, "conversation image -> " + conversation.profilePhotoId)
 
                                 activity!!.runOnUiThread {
+                                    // TODO: for some reason the id of the user is not saved
                                     conversations.add(conversation)
                                     if (noMessages.visibility == View.VISIBLE) {
                                         noMessages.visibility = View.GONE
@@ -229,11 +261,35 @@ class MessagesFragment : Fragment() {
                 for (index in 0 until conversations.size) {
                     if (conversations[index].conversationId.compareTo(lastMessage.senderId, false) == 0) {
                         conversations[index].lastMessage = lastMessage
+                        conversations[index].unreadMessages++
+                        Log.d(TAG, "Unread messages -> " + conversations[index].unreadMessages)
                         adapter.notifyItemChanged(index)
                         break
                     }
                 }
             }
         }, IntentFilter("new-message"))
+    }
+
+    private fun receiveUserStatusChange() {
+        LocalBroadcastManager.getInstance(activity!!.applicationContext).registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val userStatus = intent.getSerializableExtra("user-status") as UserStatus
+                for (index in 0 until conversations.size) {
+                    val conversation = conversations[index]
+                    if (conversation.conversationId.compareTo(userStatus.userId, false) == 0) {
+                        conversation.lastMessage.read = true
+                        adapter.notifyItemChanged(index)
+                        break
+                    }
+                }
+            }
+        }, IntentFilter("status-changed"))
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        reqNumUnreadMessages()
     }
 }

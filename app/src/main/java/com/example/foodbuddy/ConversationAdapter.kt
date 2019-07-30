@@ -39,8 +39,6 @@ class ConversationAdapter(private var items: ArrayList<Conversation>,
         holder.userName.text = conversation.conversationUser.firstName + " " +
                 conversation.conversationUser.lastName
         holder.timestamp.text = formatTime(conversation.lastMessage.timestamp)
-        holder.newMessagesHolder.visibility = View.INVISIBLE
-        holder.newMessages.text = "0"
         holder.lastMessageText.text = conversation.lastMessage.messageText
         holder.body.setOnClickListener {
             val intent = Intent(context, ChatActivity::class.java)
@@ -49,6 +47,18 @@ class ConversationAdapter(private var items: ArrayList<Conversation>,
             intent.putExtra("currentUser", currentUser)
             context!!.startActivity(intent)
         }
+
+        if (conversation.unreadMessages == 0)
+            holder.newMessagesHolder.visibility = View.INVISIBLE
+        else {
+            holder.newMessagesHolder.visibility = View.VISIBLE
+            holder.newMessages.text = conversation.unreadMessages.toString()
+        }
+        if (conversation.lastMessage.read &&
+            conversation.lastMessage.senderId.compareTo(currentUser._id, false) == 0)
+            holder.seen.visibility = View.VISIBLE
+        else
+            holder.seen.visibility = View.GONE
 
     }
 

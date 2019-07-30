@@ -1,15 +1,19 @@
 <resources>
-    <string name="app_name">FoodBuddy</string>
-    <string name="profilePicturePath">profilePicturePath</string>
-    <string name="first_message_place_holder">This is the first time you are talking to this person. Make sure you leave
-        a good impression :)
-    </string>
-
-
-    <!-->Settings<-->
-
-    <string name="mode">Mode</string>
-    <string name="default_notification_channel_id">fcm_default_channel</string>
+	<string name="app_name">FoodBuddy</string>
+	<string name="profilePicturePath">profilePicturePath</string>
+	<string name="first_message_place_holder">This is the first time you are talking to this person. Make sure you leave
+		a good impression :)
+	</string>
+	
+	
+	<!-->Settings<-->
+	
+	<string name="mode">Mode</string>
+	<string name="default_notification_channel_id">fcm_default_channel</string>
 	<string name="no_messages">You have no conversations. Start a new one by finding a person in the Discover tab
+	</string>
+	<string name="event_creation">You are about to create an event. But first, you need to wait for the other user to accept the event creation. Do you want to continue ?</string>
+	<string name="someone_requests_event_creation">The following user would like to create an event where both of you
+		will participate.
 	</string>
 </resources>

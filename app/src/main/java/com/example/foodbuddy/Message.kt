@@ -10,6 +10,7 @@ class Message: Serializable {
         const val MESSAGE_TEXT = 1
         const val MESSAGE_PHOTO = 2
         const val MESSAGE_VOICE = 3
+        const val MESSAGE_DUMMY = 4
     }
 
     @PrimaryKey(autoGenerate = true)

@@ -6,7 +6,7 @@
         android:layout_height="wrap_content"
 
 >
-
+    
     <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -18,48 +18,58 @@
             android:layout_marginBottom="4dp"
             android:layout_marginEnd="16dp"
     >
-
+        
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_message_text"
                 android:layout_alignParentTop="true"
                 android:maxWidth="240dp"
+                android:minWidth="80dp"
                 android:layout_marginTop="12dp"
                 android:textSize="16sp"
                 android:textColor="@color/white"
                 android:layout_marginEnd="12dp"
                 android:layout_marginStart="12dp"
-                tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation"
+                tools:text="A"
+                
         />
-
-        <TextView
+        
+        <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_timestamp"
                 android:layout_below="@id/tv_message_text"
-                tools:text="16 : 02"
-                android:textColor="@color/sunsetOrange"
-                android:layout_marginStart="12dp"
-                android:layout_marginBottom="12dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginTop="12dp"
-                android:layout_alignParentStart="true"
-                android:textAlignment="textStart"
-                android:textStyle="bold"
-        />
-
-    </RelativeLayout>
+                android:layout_alignEnd="@id/tv_message_text"
+        >
     
-    <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:id="@+id/iv_seen"
-            android:src="@drawable/ic_seen"
-            android:tint="@color/sunsetOrange"
-            android:layout_below="@id/rl_message_body"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="16dp"
-    />
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_timestamp"
+                    android:layout_centerVertical="true"
+                    tools:text="16 : 02"
+                    android:textColor="@color/sunsetOrange"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_alignParentStart="true"
+                    android:textAlignment="textStart"
+                    android:textStyle="bold"
+            />
+    
+            <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:id="@+id/iv_seen"
+                    android:src="@drawable/ic_seen"
+                    android:tint="@color/sunsetOrange"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+            />
+            
+        </RelativeLayout>
+        
+    </RelativeLayout>
 
 </RelativeLayout>

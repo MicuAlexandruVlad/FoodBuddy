@@ -62,6 +62,8 @@ class ChatActivity : AppCompatActivity() {
     private var canDisplayNotification = true
     private var fromConversationAdapter = false
 
+    private var lastSeenMessageIndex = 0
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +109,7 @@ class ChatActivity : AppCompatActivity() {
 
         receiveMessage()
         receiveUserStatusChange()
+        setNewMessagesAsRead()
 
         toolbar.title = ""
         toolbarTitle.text = foundUser.firstName + " " + foundUser.lastName
@@ -165,6 +168,18 @@ class ChatActivity : AppCompatActivity() {
                 messageToJson(message, obj)
                 socket.emit("chat", obj)
 
+                if (userStatus != null) {
+                    Log.d(TAG, "Conversation user status -> " + userStatus.status)
+                    Log.d(TAG, "In conversation with -> " + userStatus.inConversationWith)
+
+                    if (userStatus.status == UserStatus.IN_CONVERSATION) {
+                        if (userStatus.inConversationWith.compareTo(currentUser._id, false) == 0) {
+                            message.read = true
+                            message.readAt = getCurrentTime()
+                        }
+                    }
+                }
+
                 broadcastMessageInserted(message)
 
                 repository.insertMessage(message)
@@ -180,6 +195,12 @@ class ChatActivity : AppCompatActivity() {
 
             }
         }
+    }
+
+    private fun setNewMessagesAsRead() {
+        Thread {
+            repository.updateUnreadMessagesInConversation(true, getCurrentTime(), conversation.conversationId)
+        }.start()
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -246,7 +267,11 @@ class ChatActivity : AppCompatActivity() {
                                 noMessages.visibility = View.GONE
                                 messagesRv.visibility = View.VISIBLE
                             }
+                            message.read = true
+                            message.readAt = getCurrentTime()
                             messages.add(message)
+
+                            setNewMessagesAsRead()
 
                             messagesAdapter.notifyItemInserted(messages.size - 1)
                             layoutManager.scrollToPositionWithOffset(messages.size - 1, 0)
@@ -257,26 +282,61 @@ class ChatActivity : AppCompatActivity() {
         }, IntentFilter("new-message"))
     }
 
+    private fun initLastSeenIndex() {
+        if (messages.size > 0) {
+            for (index in messages.size - 1 until 0) {
+                if (!messages[index].read) {
+                    lastSeenMessageIndex = index
+                    Log.d(TAG, "Index value -> $lastSeenMessageIndex")
+                    break
+                }
+            }
+        }
+        else
+            lastSeenMessageIndex = 0
+    }
+
     private fun receiveUserStatusChange() {
         LocalBroadcastManager.getInstance(this).registerReceiver(object : BroadcastReceiver() {
             @SuppressLint("SetTextI18n")
             override fun onReceive(context: Context, intent: Intent) {
-                val userStatus = intent.getSerializableExtra("user-status") as UserStatus
+                userStatus = intent.getSerializableExtra("user-status") as UserStatus
 
 
                 if (userStatus.userId.compareTo(foundUser._id, false) == 0) {
                     runOnUiThread {
                         val status = userStatus.status
-                        if (status in arrayOf(1, 2)) {
+                        if (status in arrayOf(UserStatus.ONLINE, UserStatus.IN_CONVERSATION)) {
                             isOnline.text = "online"
                         }
                         else {
                             isOnline.text = "offline"
                         }
+
+                        if (status == UserStatus.IN_CONVERSATION) {
+                            if (userStatus.inConversationWith.compareTo(currentUser._id, false) == 0) {
+                                updateReadMessagesUi()
+                            }
+                            else
+                                initLastSeenIndex()
+                        }
                     }
                 }
             }
         }, IntentFilter("status-changed"))
+    }
+
+    private fun updateReadMessagesUi() {
+        for (index in lastSeenMessageIndex until messages.size) {
+            if (messages[index].senderId.compareTo(currentUser._id, false) == 0 && !messages[index].read) {
+                messages[index].read = true
+                messages[index].readAt = getCurrentTime()
+            }
+        }
+        runOnUiThread {
+            messagesAdapter.notifyDataSetChanged()
+            layoutManager.scrollToPositionWithOffset(messages.size - 1, 0)
+        }
     }
 
     private fun messageToJson(message: Message, obj: JSONObject) {
@@ -300,11 +360,16 @@ class ChatActivity : AppCompatActivity() {
             override fun doInBackground(vararg p0: Void?): Int? {
                 messages.addAll(repository.getMessagesForConversation(foundUser._id))
                 Log.d(TAG, "messages found -> " + messages.size)
+                val gson = Gson()
+                for (index in 0 until messages.size) {
+                    Log.d(TAG, "Message json -> " + gson.toJson(messages[index]))
+                }
                 return 0
             }
 
             override fun onPostExecute(result: Int?) {
                 super.onPostExecute(result)
+                initLastSeenIndex()
                 runOnUiThread {
                     if (messages.size != 0)
                         noMessages.visibility = View.GONE
@@ -345,8 +410,20 @@ class ChatActivity : AppCompatActivity() {
                 startActivityForResult(intent, SETTINGS_REQ_CODE)
                 true
             }
+            R.id.create_event -> {
+                showEventCreationDialog(socket)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showEventCreationDialog(socket: Socket) {
+        val dialog = EventCreationRequestPermissionDialog(this, socket)
+        dialog.currentUser = currentUser
+        dialog.foundUser = foundUser
+        dialog.create()
+        dialog.show()
     }
 
     private fun getCurrentTime() : String {
@@ -391,7 +468,7 @@ class ChatActivity : AppCompatActivity() {
         canDisplayNotification = true
         broadcastNotificationFlag()
         emitUserOutOfConversation(currentUser)
-        socket.disconnect()
+        //socket.disconnect()
     }
 
     private fun emitUserInConversation(currentUser: User, foundUser: User) {

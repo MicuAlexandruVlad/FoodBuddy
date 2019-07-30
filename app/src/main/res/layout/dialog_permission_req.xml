@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:tools="http://schemas.android.com/tools"
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		android:layout_width="280dp"
+		android:layout_height="wrap_content"
+		android:animateLayoutChanges="true"
+		android:background="@color/white">
+	
+	<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/tv_title"
+			android:text="Event Creation Request"
+			android:textColor="@color/black"
+			android:textSize="20sp"
+			app:layout_constraintTop_toTopOf="parent"
+			android:layout_marginStart="24dp"
+			android:layout_marginTop="20dp"
+			android:textStyle="bold"
+			tools:ignore="HardcodedText"/>
+	
+	
+	<android.support.constraint.ConstraintLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			app:layout_constraintTop_toBottomOf="@id/tv_title"
+			android:paddingBottom="8dp"
+			android:clipToPadding="false"
+			android:visibility="visible"
+			android:id="@+id/cl_step_1"
+	>
+		
+		<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/tv_body"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				android:layout_marginEnd="24dp"
+				android:layout_marginStart="24dp"
+				android:layout_marginTop="20dp"
+				android:textColor="@color/md_grey_800"
+				android:textSize="16sp"
+				tools:text="This user is trying to create an event where both of you will participate. Do you accept ?"
+		/>
+		
+		<Button
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/btn_no"
+				android:text="No"
+				android:background="@android:color/transparent"
+				app:layout_constraintTop_toBottomOf="@id/tv_body"
+				app:layout_constraintEnd_toStartOf="@id/btn_yes"
+				android:layout_marginEnd="8dp"
+				android:layout_marginTop="36dp"
+				android:textColor="@color/colorAccent"
+				tools:ignore="HardcodedText"/>
+		
+		<Button
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/btn_yes"
+				android:text="Yes"
+				android:background="@android:color/transparent"
+				app:layout_constraintTop_toBottomOf="@id/tv_body"
+				app:layout_constraintEnd_toEndOf="parent"
+				android:layout_marginEnd="8dp"
+				android:layout_marginTop="36dp"
+				android:textColor="@color/colorAccent"
+				tools:ignore="HardcodedText"/>
+	
+	</android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

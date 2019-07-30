@@ -7,4 +7,5 @@ class Conversation: Serializable {
     var profilePhotoId: String = ""
     var conversationUser: User = User()
     var lastMessage: Message = Message()
+    var unreadMessages: Int = 0
 }

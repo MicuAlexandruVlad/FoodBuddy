@@ -2,10 +2,14 @@ package com.example.foodbuddy
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
 import android.transition.Fade
@@ -29,6 +33,7 @@ import cz.msebera.android.httpclient.HttpStatus
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.Serializable
 import java.net.URISyntaxException
 import java.util.*
 import kotlin.collections.ArrayList
@@ -95,10 +100,14 @@ class MainActivity : AppCompatActivity() {
 
         Log.d(TAG, "conversations -> " + conversations.size)
 
+        broadcastCurrentUser(currentUser)
         emitUserOnline()
+        receiveEventRequest()
 
         FirebaseMessaging.getInstance().subscribeToTopic(currentUser._id)
         Log.d(TAG, "subscribed to -> " + currentUser._id)
+
+        emitDummyMessage()
 
         leftIcon.setOnClickListener {
             if (pager.currentItem != 0)
@@ -158,6 +167,21 @@ class MainActivity : AppCompatActivity() {
         reqUsersInSameArea(currentUserCountry, currentUserCity, preferredGender, minAge, maxAge)
     }
 
+    private fun broadcastCurrentUser(currentUser: User) {
+        val intent = Intent("current-user")
+        intent.putExtra("currentUser", currentUser)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+    }
+
+    private fun emitDummyMessage() {
+        val dummyMessage = Message()
+        val gson = Gson()
+        dummyMessage.type = Message.MESSAGE_DUMMY
+        dummyMessage.senderId = currentUser._id
+        val data = JSONObject(gson.toJson(dummyMessage))
+        socket.emit("chat", data)
+    }
+
     private fun emitUserOnline() {
         val userStatus = UserStatus()
         val gson = Gson()
@@ -188,6 +212,23 @@ class MainActivity : AppCompatActivity() {
     private fun initAdapter(bundleMessages: Bundle, bundleDiscover: Bundle, bundleEvents: Bundle, user: User) {
         adapter = MainPagerAdapter(supportFragmentManager, bundleMessages, bundleDiscover, bundleEvents, user)
         pager.adapter = adapter
+    }
+
+    private fun receiveEventRequest() {
+        LocalBroadcastManager.getInstance(this).registerReceiver(object : BroadcastReceiver() {
+            @SuppressLint("SetTextI18n")
+            override fun onReceive(context: Context, intent: Intent) {
+                val eventRequest = intent.getSerializableExtra("event-request") as EventRequest
+                if (eventRequest.reqType == EventRequest.EVENT_REQUEST_PERMISSION) {
+                    runOnUiThread {
+                        val dialog = EventCreationRequestPermissionDialog(this@MainActivity, socket)
+                        dialog.dialogType = 1
+                        dialog.create()
+                        dialog.show()
+                    }
+                }
+            }
+        }, IntentFilter("event-request"))
     }
 
     private fun reqUsersInSameArea(currentUserCountry: String, currentUserCity: String, preferredGender: String,
